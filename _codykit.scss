@@ -1,4 +1,4 @@
-//CSS Toolkit :: Codykit version : 0.4.0
+//CSS Toolkit :: Codykit version : 0.4.2
 //auther : hojugn ahn (https://github.com/labeldock/nody)
 
 $codykit-hack : false;
@@ -76,22 +76,35 @@ $codykit-relative-empx:16px !global;
     @include wh($width,$height);
 }
 //ok
-@mixin block($width:false, $height:false, $align:false){
+@mixin block($width:false, $height:false, $align:false, $line-height:false){
     @include align-block($align, $width, $height);
+	
+	@if $line-height {
+		line-height:$line-height;
+	}
+	
+	@content;
 }
 //ok
-@mixin inline-block($width:false, $height:false,$vertical-align:false){
+@mixin inline-block($width:false, $height:false,$vertical-align:false,$line-height:false){
     @if $codykit-hack == true {
         display:inline;
 		zoom:1;
     }
     display:inline-block;
 	@include wh($width,$height);
+	
 	@if $vertical-align == false {
 		vertical-align:middle;
 	} @else {
 		vertical-align:$vertical-align;
 	}
+	
+	@if $line-height {
+		line-height:$line-height;
+	}
+	
+	@content;
 }
 //nok
 @mixin sticky($main-pos:0px, $position:top){
@@ -487,7 +500,7 @@ $codykit-relative-empx:16px !global;
 	}
 }
 //ok
-@mixin shadow-inset-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:silver,$spread:false){
+@mixin shadow-inset-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:gray,$spread:false){
     @if $blur == false { $blur : (($x-shadow + $y-shadow) / 2); }
     @if $spread {
         @include css3f(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$spread} #{$color});
@@ -1561,8 +1574,6 @@ $codykit-relative-empx:16px !global;
         font-style: inherit;
 		color:inherit;
         font-weight:inherit;
-        padding:0;
-        margin:0;
 		cursor:pointer;
 		vertical-align:$vertical-align;
 	}
@@ -1620,6 +1631,7 @@ $codykit-relative-empx:16px !global;
 	}
 	menu > li {
 		list-style:none;
+		cursor:pointer;
 	}
 	dl,dd {
 		margin:0;
