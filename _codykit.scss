@@ -1,4 +1,4 @@
-//CSS Toolkit :: Codykit version : 0.4.2
+//CSS Toolkit :: Codykit version : 0.5.0
 //auther : hojugn ahn (https://github.com/labeldock/nody)
 
 $codykit-hack : false;
@@ -29,8 +29,6 @@ $codykit-relative-empx:16px !global;
 	@if $font-size == false {
 		font-size:1rem;
 	} @else {
-		a:$font-size;
-		b:$codykit-relative-empx;
 		font-size:#{$font-size / $codykit-standard-empx}rem;
 	}
 }
@@ -106,6 +104,98 @@ $codykit-relative-empx:16px !global;
 	
 	@content;
 }
+@mixin flex-variant($direction:row, $wrap:wrap){
+	@if $direction == row or $direction == left {
+		flex-direction:row;
+	}
+	@if $direction == row-reverse or $direction == right {
+		flex-direction:row-reverse;
+	}
+	@if $direction == column or $direction == top {
+		flex-direction:column;
+	}
+	@if $direction == column-reverse or $direction == bottom {
+		flex-direction:column-reverse;
+	}
+	justify-content:space-between;
+	
+	@if $wrap == wrap or  $wrap == true {
+		flex-wrap:wrap;
+	}
+	@if $wrap == nowrap or  $wrap == false {
+		flex-wrap:no-wrap;
+	}
+	@content;
+}
+@mixin flex($width:false, $height:false, $direction:row, $wrap:wrap){
+	display: -webkit-flex;
+	display: flex;
+	@include wh($width,$height);
+	@include flex-variant($direction,$wrap);
+	@content;
+}
+@mixin inline-flex($width:false, $height:false, $direction:row, $wrap:wrap){
+	display: -webkit-inline-flex;
+	display: inline-flex;
+	vertical-align:middle;
+	
+	@include wh($width,$height);
+	@include flex-variant($direction,$wrap);
+	@content;
+}
+@mixin flex-position($horizontal-align:center,$vertical-align:center){
+	-webkit-align-items: $horizontal-align;
+	align-items: $horizontal-align;
+	-webkit-justify-content: $vertical-align;
+	justify-content: $vertical-align;
+}
+@mixin flex-item($width:false,$height:false,$flex-grow:false) {
+	-webkit-flex: 1; /* Safari 6.1+ */
+    -ms-flex: 1; /* IE 10 */ 
+    flex: 1;
+	@include wh($width,$height);
+	@if $flex-grow == true or $flex-grow == 1 {
+		flex-grow:1;
+	} @else {
+		flex-grow:0;
+	}
+	//align-self: auto | flex-start | flex-end | center | baseline | stretch;
+	@content;
+}
+@mixin flex-item-count($count:1){
+	@include flex-item(false,false,true){
+		width:(100% / $count);
+	}
+	@content;
+}
+
+@mixin flex-response-section($margin:10px) {
+	@include flex(false,false,row);
+	$flex-response-margin:$margin !global;
+	margin-left:-($flex-response-margin / 2);
+	margin-right:-($flex-response-margin / 2);
+	@content;
+}
+@mixin inline-flex-response-section($margin:10px) {
+	@include inline-flex(false,false,row);
+	$flex-response-margin:$margin !global;
+	margin-left:-($flex-response-margin / 2);
+	margin-right:-($flex-response-margin / 2);
+	@content;
+}
+@mixin flex-response-item($width:false,$height:false){
+	@include flex-item($width,$height);
+	margin-left:($flex-response-margin / 2);
+	margin-right:($flex-response-margin / 2);
+}
+@mixin flex-response-item-count($count:1) {
+	@include flex-item-count($count);
+	margin-left:($flex-response-margin / 2);
+	margin-right:($flex-response-margin / 2);
+	@content;
+}
+
+
 //nok
 @mixin sticky($main-pos:0px, $position:top){
     @include css3v(position,sticky);
@@ -431,6 +521,25 @@ $codykit-relative-empx:16px !global;
 //ok
 @mixin absolute($x:false,$y:false,$r:false,$b:false){
 	position:absolute;
+	@if $x == right {
+		$x:false;
+		$y:0;
+		@if $y != false {
+			$r:$y;			
+		} @else {
+			$r:0;
+		}
+	}
+	@if $x == left {
+		$x:false;
+		$y:0;
+		@if $y != false {
+			$x:$y;
+		} @else {
+			$r:0;
+		}
+	}
+	
 	@if $x { left:$x; }
 	@if $y { top:$y; }
 	@if $r { right:$r; }
@@ -575,8 +684,7 @@ $codykit-relative-empx:16px !global;
     margin-right:$margin;
     background-color:$color;
 }
-@mixin background-image-variant($url,$x:false,$y:false,$repeat:no-repeat){
-	background-image:$url;
+@mixin background-position-variant($x:false,$y:false,$repeat:no-repeat){
 	background-repeat:$repeat;
 	@if $x and $y {
 		background-position:#{$x} #{$y};
@@ -586,8 +694,13 @@ $codykit-relative-empx:16px !global;
 		}
 		@if $y {
 			background-position:left #{$y};
+		}
 	}
-	}
+	@content;
+}
+@mixin background-image-variant($url,$x:false,$y:false,$repeat:no-repeat){
+	background-image:$url;
+	@include background-position-variant($x,$y,$repeat);
 	@content;
 }
 @mixin inner-image-variant($url:false,$icon-align:left,$icon-offset:false,$icon-offset2:false) {
@@ -994,46 +1107,21 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 //ok
-@mixin text-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:solid){
+@mixin text-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include block-variant($width,$height,$vertical-align,$align-block);
-	@if $font-size {
-		@include text-variant($font-size);
-	}
-	@if $font-color {
-		color:$font-color;
-	}
-	@if $bg-color {
-		background:$bg-color;
-	}
-	@if $border-width {
-		border-style:$border-style;
-		border-width:$border-width;
-	}
-	@if $border-color {
-		border-color:$border-color;
-	}
 	@content;
 }
 //nok
 @mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:inherit,$bg-color:false,$border-width:false,$border-color:false,$border-style:solid){
-	@include text-block-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+	@include text-block-variant($width,$height,$vertical-align,$align-block);
     cursor:pointer;
     text-decoration:inherit;
     &:hover { text-decoration:inherit;color:inherit; }
 	@content;
 }
 //ok
-@mixin label-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:solid){
-	@include text-block-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
-	@if $height {		
-		@if $border-width {
-			line-height: ($height - $border-width);
-		} @else {
-			line-height:$height;
-		}
-	} @else {
-		line-height:1;
-	}
+@mixin label-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@include text-block-variant($width,$height,$vertical-align,$align-block);
 	margin:0;
 	padding:0;
 	> * {
@@ -1041,8 +1129,8 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin menuitem-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:solid){
-	@include text-block-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+@mixin menuitem-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@include text-block-variant($width,$height,$vertical-align,$align-block);
 	@if $height {		
 		@if $border-width {
 			line-height: ($height - $border-width);
@@ -1076,7 +1164,7 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin image-text-variant($url,$width:false,$height:false,$vertical-align:middle,$align-block:false,$bg-position:left center){
+@mixin image-text-variant($url,$width:false,$height:false,$vertical-align:middle,$align-block:false,$bg-position:center center){
 	@include background-block-variant($url,$width,$height,$bg-position,auto,no-repeat,$vertical-align,$align-block);
     text-indent:-99999px;
 	@content;
@@ -1097,15 +1185,21 @@ $codykit-relative-empx:16px !global;
     &:active{ text-decoration:none; };
 }
 //ok
-@mixin button-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:false){
+@mixin button-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
-	@include label-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+	@include label-variant($width,$height,$vertical-align,$align-block);
+	@if $height {
+		line-height:$height;
+	} @else {
+		line-height:100%;
+	}
+	
 	@content;
 }
 //ok
-@mixin padding-button-variant($padding:3px 3px 3px 3px,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:false){
+@mixin padding-button-variant($padding:3px 3px 3px 3px,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
-	@include label-variant(false,false,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+	@include label-variant(false,false,$vertical-align,$align-block);
 	padding:$padding;
 	@content;
 }
@@ -1120,23 +1214,23 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 //ok
-@mixin input-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:false){
-	@include label-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+@mixin input-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@include label-variant($width,$height,$vertical-align,$align-block);
 	//webkit cursor fix
 	line-height:100%;
 	@content;
 }
 //nok
-@mixin image-input-variant($url:false,$width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:false){
+@mixin image-input-variant($url:false,$width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include appearance-variant(false);
-	@include label-variant($width,$height,$vertical-align,$align-block,$font-size,$font-color,$bg-color,$border-width,$border-color);
+	@include label-variant($width,$height,$vertical-align,$align-block);
 	@content;
 }
 //ok
-@mixin checkbox-variant($square-size:false,$vertical-align:middle,$align-block:false,$bg-color:false,$border-width:false,$border-color:false,$border-style:false) {
+@mixin checkbox-variant($square-size:false,$vertical-align:middle,$align-block:false) {
 	@if $square-size != false {
 		@include appearance-variant(false);
-		@include text-block-variant($square-size,$square-size,$vertical-align,$align-block,false,false,$bg-color,$border-width,$border-color);    
+		@include text-block-variant($square-size,$square-size,$vertical-align,$align-block);    
 		cursor:pointer;
 	}
 	@content;
@@ -1488,14 +1582,16 @@ $codykit-relative-empx:16px !global;
         cursor: -moz-grabbing;
     }
 }
-@mixin response-section($inner-padding:10px,$width:auto){
+@mixin response-section($response-horizental-padding:10px,$response-vertical-padding:5px){
 	@include clearfix;
 	display:block;
-	width:$width;
+	width:auto;
 	box-sizing:border-box !important;
-	margin-left: -($inner-padding/2);
-	margin-right: -($inner-padding/2);
-	$inner-padding:$inner-padding !global;
+	margin-left: -($response-horizental-padding/2);
+	margin-right: -($response-horizental-padding/2);
+	$response-horizental-padding:$response-horizental-padding !global;
+	$response-vertical-padding:$response-vertical-padding !global;
+	margin-top:-$response-vertical-padding;
 	@content;
 }
 @mixin response-column($width:100%,$main-content:false){
@@ -1508,11 +1604,12 @@ $codykit-relative-empx:16px !global;
 	width:$width;
 	margin-left:0;
 	margin-right:0;
-	padding-left: ($inner-padding / 2);
-	padding-right: ($inner-padding / 2);
+	padding-left: ($response-horizental-padding / 2);
+	padding-right: ($response-horizental-padding / 2);
+	margin-top:$response-vertical-padding;
 	@if $main-content {
 		> #{$main-content} {
-			//@include absolute(($inner-padding / 2),0,($inner-padding / 2),0);
+			//@include aresponse-bsolutehorizentalinner-padding / 2),0response-horizentalinner-padding / 2),0);
 			position:relative;
 			@content;
 		}
