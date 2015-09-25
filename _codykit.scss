@@ -1,15 +1,15 @@
-//CSS Toolkit :: Codykit version : 0.5.0
-//auther : hojugn ahn (https://github.com/labeldock/nody)
+//CSS Toolkit :: Codykit version : 0.6.0
+//auther : hojugn ahn (https://github.com/labeldock/codykit)
 
 $codykit-hack : false;
 //media default option
 $codykit-tablet-width:768px;
-$codykit-desktop-width:1024px;
+$codykit-desktop-width:1280px;
 //media detail option
 $codykit-mobile-landscape-width:480px;
 $codykit-tablet-landscape-width:992px;
-$codykit-desktop-landscape-width:1200px;
-$codykit-custom-elements:"content";
+$codykit-desktop-landscape-width:1920px;
+$codykit-custom-elements:"content,item,stack,group,control,tab,switch,case,modal";
 $codykit-preload-images:"" !global;
 $codykit-standard-empx:16px !global;
 $codykit-relative-empx:16px !global;
@@ -32,27 +32,8 @@ $codykit-relative-empx:16px !global;
 		font-size:#{$font-size / $codykit-standard-empx}rem;
 	}
 }
-
-//margin-padding ok
-@mixin mp($margin:0px,$padding:false){
-    margin:$margin;
-    @if $margin == 0px and $padding == false {
-        padding:$margin;
-    } @elseif $padding != false {
-        padding:$padding;
-    }
-}
-//padding-margin ok
-@mixin pm($padding:0px,$margin:false){
-	padding:$padding;
-    @if $padding == 0px and $padding {
-		margin:$padding;
-    } @elseif $margin != false {
-        margin:$margin;
-    }
-}
 //width-height ok
-@mixin wh($width:false,$height:false) {
+@mixin codykit-wh($width:false,$height:false) {
     @if $width != false  { width:$width; }
     @if $height != false { height:$height; }
 }
@@ -71,7 +52,7 @@ $codykit-relative-empx:16px !global;
         margin-left:auto;
         margin-right:auto;
     }
-    @include wh($width,$height);
+    @include codykit-wh($width,$height);
 }
 //ok
 @mixin block($width:false, $height:false, $align:false, $line-height:false){
@@ -90,7 +71,7 @@ $codykit-relative-empx:16px !global;
 		zoom:1;
     }
     display:inline-block;
-	@include wh($width,$height);
+	@include codykit-wh($width,$height);
 	
 	@if $vertical-align == false {
 		vertical-align:middle;
@@ -104,17 +85,17 @@ $codykit-relative-empx:16px !global;
 	
 	@content;
 }
-@mixin flex-variant($direction:row, $wrap:wrap){
-	@if $direction == row or $direction == left {
+@mixin flex-flow-variant($direction:row, $wrap:wrap){
+	@if $direction == row or $direction == top {
 		flex-direction:row;
 	}
-	@if $direction == row-reverse or $direction == right {
+	@if $direction == row-reverse or $direction == bottom{
 		flex-direction:row-reverse;
 	}
-	@if $direction == column or $direction == top {
+	@if $direction == column or $direction == left {
 		flex-direction:column;
 	}
-	@if $direction == column-reverse or $direction == bottom {
+	@if $direction == column-reverse or $direction == right {
 		flex-direction:column-reverse;
 	}
 	justify-content:space-between;
@@ -123,15 +104,15 @@ $codykit-relative-empx:16px !global;
 		flex-wrap:wrap;
 	}
 	@if $wrap == nowrap or  $wrap == false {
-		flex-wrap:no-wrap;
+		flex-wrap:nowrap;
 	}
 	@content;
 }
 @mixin flex($width:false, $height:false, $direction:row, $wrap:wrap){
 	display: -webkit-flex;
 	display: flex;
-	@include wh($width,$height);
-	@include flex-variant($direction,$wrap);
+	@include codykit-wh($width,$height);
+	@include flex-flow-variant($direction,$wrap);
 	@content;
 }
 @mixin inline-flex($width:false, $height:false, $direction:row, $wrap:wrap){
@@ -139,45 +120,45 @@ $codykit-relative-empx:16px !global;
 	display: inline-flex;
 	vertical-align:middle;
 	
-	@include wh($width,$height);
-	@include flex-variant($direction,$wrap);
+	@include codykit-wh($width,$height);
+	@include flex-flow-variant($direction,$wrap);
 	@content;
 }
-@mixin flex-position($horizontal-align:center,$vertical-align:center){
+@mixin flex-align($horizontal-align:center,$vertical-align:center){
 	-webkit-align-items: $horizontal-align;
 	align-items: $horizontal-align;
 	-webkit-justify-content: $vertical-align;
 	justify-content: $vertical-align;
 }
-@mixin flex-item($width:false,$height:false,$flex-grow:false) {
-	-webkit-flex: 1; /* Safari 6.1+ */
-    -ms-flex: 1; /* IE 10 */ 
-    flex: 1;
-	@include wh($width,$height);
-	@if $flex-grow == true or $flex-grow == 1 {
-		flex-grow:1;
+@mixin flex-item($width:false,$height:false) {
+	@if $width {
+		//flex-grow:2;
+		width:$width;
 	} @else {
-		flex-grow:0;
+		//equal size in container
+		flex-grow:1;
+		flex-basis:0;
 	}
-	//align-self: auto | flex-start | flex-end | center | baseline | stretch;
+	@if $height {
+		height:$height;
+	}
+	flex-shrink:1;
 	@content;
 }
 @mixin flex-item-count($count:1){
-	@include flex-item(false,false,true){
-		width:(100% / $count);
-	}
+	@include flex-item((100% / $count),false);
 	@content;
 }
 
 @mixin flex-response-section($margin:10px) {
-	@include flex(false,false,row);
+	@include flex(false,false,column);
 	$flex-response-margin:$margin !global;
 	margin-left:-($flex-response-margin / 2);
 	margin-right:-($flex-response-margin / 2);
 	@content;
 }
 @mixin inline-flex-response-section($margin:10px) {
-	@include inline-flex(false,false,row);
+	@include inline-flex(false,false,column);
 	$flex-response-margin:$margin !global;
 	margin-left:-($flex-response-margin / 2);
 	margin-right:-($flex-response-margin / 2);
@@ -194,8 +175,6 @@ $codykit-relative-empx:16px !global;
 	margin-right:($flex-response-margin / 2);
 	@content;
 }
-
-
 //nok
 @mixin sticky($main-pos:0px, $position:top){
     @include css3v(position,sticky);
@@ -223,15 +202,16 @@ $codykit-relative-empx:16px !global;
 	@if $flag == true{
 	    white-space: normal;
 		word-break:keep-all;
+		//word-break:normal;
 	    //word-wrap:normal;
 		@if $overflow == false {
 			overflow: visible;
 		} @else {
 			overflow: $overflow;
 		}
-        text-overflow: none;
-        -o-text-overflow: none;
-        -ms-text-overflow: none;
+        text-overflow: initial;
+        -o-text-overflow: initial;
+        -ms-text-overflow: initial;
 	}
 	@if $flag == false{
 		white-space: nowrap;
@@ -257,8 +237,7 @@ $codykit-relative-empx:16px !global;
 		line-height:$line-height;
 	}
 }
-//ok
-@mixin select-variant($flag:true) {
+@mixin user-select-variant($flag:true) {
 	@if $flag == true {
 		-webkit-touch-callout: auto;
 		@include css3f(user-select, auto);
@@ -267,7 +246,6 @@ $codykit-relative-empx:16px !global;
 		@include css3f(user-select, none);
 	}
 }
-// not complete
 @mixin appearance-variant($flag:true){
 	@if $flag == true {
 	    @include css3f(appearance,normal);
@@ -281,8 +259,8 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin event-variant($flag:true){
-    @include select-variant($flag);
+@mixin pointer-event-variant($flag:true){
+    @include user-select-variant($flag);
     @if $flag == false {
         pointer-events: none;
     } @else {
@@ -304,7 +282,6 @@ $codykit-relative-empx:16px !global;
     -ms-#{$name}     : $value;
     #{$name}         : $value;
 }
-//ok
 @mixin calc-plus($prop,$value:0px,$fallback:false,$initial-value:100%){
 	@if $value < 0px {
 		@include css3v($prop,calc(#{$initial-value} - #{$value * -1}),$fallback);
@@ -312,7 +289,6 @@ $codykit-relative-empx:16px !global;
 		@include css3v($prop,calc(#{$initial-value} + #{$value}),$fallback);
 	}   
 }
-//ok
 @mixin calc-minus($prop,$value:0px,$fallback:false,$initial-value:100%){
 	@if $value < 0px {
 		@include css3v($prop,calc(#{$initial-value} + #{$value * -1}),$fallback);
@@ -323,7 +299,6 @@ $codykit-relative-empx:16px !global;
 @mixin calc($prop,$initial-value:100%,$value:0px,$fallback:false){
 	@include calc-plus($prop,$value,$fallback,$initial-value);
 }
-//ok
 @mixin transform($value){
     @include css3f(transform, $value);
 }
@@ -400,6 +375,20 @@ $codykit-relative-empx:16px !global;
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
 }
+@mixin display-active($display:block,$active:".active") {
+	display:none;
+	&#{$active} {
+		display:$display;
+		@content;
+	}
+}
+@mixin visibility-active($active:".active") {
+    visibility:hidden;
+    &#{$active} {
+        visibility:visible;
+		@content;
+    }
+}
 //ok
 @mixin opacity($opacity:1){
   opacity: $opacity;
@@ -430,29 +419,30 @@ $codykit-relative-empx:16px !global;
         @include translateX($x);
     }
 }
-//ok
-@mixin flipH($flip:true){
-    @if $flip == true {
-        @include css3f(transform, scaleX(-1));
-        filter: FlipH;
-        -ms-filter: "FlipH";
-    } @else {
-        @include css3f(transform, scaleX(1));
-        filter: none;
-        -ms-filter: none;
-    }
-}
-//ok
-@mixin flipV($flip:true){
-    @if $flip == true {
-        @include css3f(transform, scaleY(-1));
-        filter: FlipV;
-        -ms-filter: "FlipV";
-    } @else {
-        @include css3f(transform, scaleY(1));
-        filter: none;
-        -ms-filter: none;
-    }
+//TODO:not test
+@mixin flip-variant($direction,$flip:true) {
+	@if $direction == top or $direction == bottom or $direction == height or $direction == vertical {
+	    @if $flip == true {
+	        @include css3f(transform, scaleX(-1));
+	        filter: FlipH;
+	        -ms-filter: "FlipH";
+	    } @else {
+	        @include css3f(transform, scaleX(1));
+	        filter: none;
+	        -ms-filter: none;
+	    }
+	}
+	@if $direction == left or $direction == right or $direction == width or $direction == horizontal {
+	    @if $flip == true {
+	        @include css3f(transform, scaleY(-1));
+	        filter: FlipV;
+	        -ms-filter: "FlipV";
+	    } @else {
+	        @include css3f(transform, scaleY(1));
+	        filter: none;
+	        -ms-filter: none;
+	    }
+	}
 }
 @mixin translate3d($x:0,$y:0,$z:0){
     @include css3f(transform, translate3d(#{$x},#{$y},#{$z}));
@@ -523,20 +513,53 @@ $codykit-relative-empx:16px !global;
 	position:absolute;
 	@if $x == right {
 		$x:false;
-		$y:0;
-		@if $y != false {
+		@if $y {
 			$r:$y;			
 		} @else {
 			$r:0;
 		}
+		$y:0;
 	}
 	@if $x == left {
-		$x:false;
-		$y:0;
+		$x:false;		
 		@if $y != false {
-			$x:$y;
+			$x:0;
 		} @else {
+			$x:$y;
+		}
+		$y:0;
+	}
+	
+	@if $x == bottom {
+		@if $y == center {
+			
+			@if $r {
+				$b:$r;
+			} @else {
+				$b:0;
+			}
+			$x:auto;
+			$r:auto;
+			$y:auto;
+		} @elseif $y == left {
+			
+			@if $r {
+				$b:$r;
+			} @else {
+				$b:0;
+			}
+			$x:0;
+			$r:auto;
+			$y:auto;
+		} @elseif $y == right {
+			@if $r {
+				$b:$r;
+			} @else {
+				$b:0;
+			}
+			$x:auto;
 			$r:0;
+			$y:auto;
 		}
 	}
 	
@@ -774,14 +797,6 @@ $codykit-relative-empx:16px !global;
 	
 	@content;
 }
-@mixin block-image-variant($url:false,$width:false,$height:false,$icon-align:left,$icon-offset:false,$icon-offset2:false){
-	@include block($width,$height);
-	@include inner-image-variant($url,$icon-align,$icon-offset,$icon-offset2);
-}
-@mixin inline-block-image-variant($url:false,$width:false,$height:false,$icon-align:left,$icon-offset:false,$icon-offset2:false){
-	@include inline-block($width,$height);
-	@include inner-image-variant($url,$icon-align,$icon-offset,$icon-offset2);
-}
 @mixin outer-image-variant($url:false,$icon-align:left,$icon-size:false,$icon-offset:false,$icon-offset2:false){
 	@include inner-image-variant($url,$icon-align,$icon-offset,$icon-offset2);
 	@if $icon-align == left {
@@ -877,46 +892,9 @@ $codykit-relative-empx:16px !global;
 	//with content
 	@content;
 }
-
-//ok
-@mixin label-select-container-variant($url-select-arrow:false,$width:auto,$height:25px,$arrow-position:right center,$border:1px solid silver) {
-    @include inline-block;
-    @if $url-select-arrow {
-        background-image:url($url-select-arrow);
-        background-repeat:no-repeat;
-        background-position:$arrow-position;
-    }
-    width:$width;
-    height:$height;
-    line-height:$height;
-    border:$border;
-    margin:0;
-    vertical-align:middle;
-    overflow:hidden;
-    select {
-        @include no-appearance;
-        background:transparent;
-        width:100%;
-        height:$height;
-        line-height:1;
-        font-size:inherit;
-        border:0;
-        border-radius:0;
-        padding-left:5px;
-    }
-}
-@mixin item-group-variant($item-selector:"*",$display:false,$item-width:false,$item-height:false){
-    & > #{$item-selector} {
-        @if $display {
-            @include display($display);
-        }
-        @if $item-width {
-            width:$item-width;
-        }
-        @if $item-height {
-            height:$item-height;
-        }
-    }
+@mixin presudo-icon-variant(){
+	content:"";
+	@content;
 }
 @mixin list-variant($list-height:false,$display:false,$list-style:none){
     margin:0px;
@@ -956,26 +934,9 @@ $codykit-relative-empx:16px !global;
         border:$border;
     }
 }
-
 //table 크기안에서 셀크기가 결정됩니다.
-@mixin table-variant($spacing:0px,$border:false) {
-    @include cellbase-table-variant($spacing,$border,100%,fixed);
-}
-//td, th안에서
-@mixin table-cell-variant ($vertical:middle,$align:left,$height:false,$padding:false,$hBorder:false,$vBorder:false,$hBorderTop:false,$hBorderBottom:false){
-    @if $vertical{ vertical-align:$vertical } @else {vertical-align:middle;}
-    @if $align   { text-align:$align; } @else {text-align:left;}
-    @if $height  { height: $height;min-height: $height; }
-    @if $padding { padding:$padding; }
-    @if $hBorder {
-        border-top:$hBorder;
-        border-bottom:$hBorder;
-    }
-    @if $vBorder {
-        border-left:$vBorder;
-        border-right:$vBorder;
-    }
-}
+@mixin fixed-table-variant($spacing:0px,$border:false) { @include cellbase-table-variant($spacing,$border,100%,fixed); }
+@mixin table-variant($spacing:0px,$border:false) { @include cellbase-table-variant($spacing,$border,100%,fixed); }
 @mixin border-radius($dirction,$radius){
 	@if $dirction == "top" {
 	    border-top-right-radius: $radius;
@@ -994,103 +955,14 @@ $codykit-relative-empx:16px !global;
 	       border-top-left-radius: $radius;
 	}
 }
-@mixin layout-variant($container-name:false) {
-    position:relative;
-    width:100%;
-    @include heightfix;
-
-    @if $container-name == false {
-        $container-name:#{&};
-    } @else {
-        $container-name:"." + $container-name;
-    }
-    #{$container-name}-center {
-        @include inline-block;margin-left:auto !important;margin-right:auto !important;text-align:center;
-        >* { vertical-align:middle; }
-    }
-    #{$container-name}-left   {
-        @include inline-block;
-        float:left;
-        >* { vertical-align:middle; }
-    }
-    #{$container-name}-right {
-        @include inline-block;
-        float:right;
-        position:relative;
-        >* { vertical-align:middle; }
-    }
-}
-
-//layout-variant는 컨텐츠 높이에 반응하지만 list-cell은 정의된 높이에서만 동작한다.
-@mixin cell-layout-variant($container-name:false,$height:false,$cell-side-padding:0px,$cell-top-offset:0px){
-    position:relative;
-    width:100%;
-
-    @if $height {
-        height:$height;
-        line-height:$height;
-    }
-
-    @if $container-name == false {
-        $container-name:#{&};
-    } @else {
-        $container-name:"." + $container-name;
-    }
-
-    #{$container-name}-left   {
-        position:absolute;
-        top:$cell-top-offset;
-        left:$cell-side-padding;
-        height:$height;
-    }
-    #{$container-name}-right {
-        position:absolute;
-        top:$cell-top-offset;
-        right:$cell-side-padding;
-        height:$height;
-    }
-}
-//ok
-@mixin paragraph-variant($font-size:false,$font-color:false,$font-weight:false,$line-height:false){
-	display:block;
-	padding:0;
-	
-	@if $font-size {
-		font-size:$font-size;
-	}
-	@if $font-color {
-		color:$font-color;
-	}
-	@if $font-weight {
-		font-weight: $font-weight;
-	} 
-    @if $line-height {
-        line-height: $line-height;
-    } @else {
-    	line-height: 1.3;
-    }
-	vertical-align: baseline;
-	@content;
-}
 //nok
-@mixin text-variant($font-size:false,$text-align:false,$line-height:false){
-	@if $font-size {
-		font-size:$font-size;
+@mixin disabled-variant($switch:true) {
+	@if $switch == true {
+	    cursor: not-allowed;
+	    pointer-events: none;
+	    -webkit-box-shadow: none;
+	    box-shadow: none;
 	}
-    @if $text-align {
-        text-align: $text-align;
-    }
-    @if $line-height {
-        line-height: $line-height;
-    }
-	@content;
-}
-//nok
-@mixin disabled-variant($font-size:false,$text-align:false,$line-height:false,$vertical-align:middle) {
-    cursor: not-allowed;
-    pointer-events: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
 }
 @mixin block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@if $align-block {
@@ -1106,14 +978,9 @@ $codykit-relative-empx:16px !global;
 	@include block-variant($width,$height,$vertical-align,$align-block);
 	@content;
 }
-//ok
-@mixin text-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include block-variant($width,$height,$vertical-align,$align-block);
-	@content;
-}
 //nok
-@mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false,$font-size:false,$font-color:inherit,$bg-color:false,$border-width:false,$border-color:false,$border-style:solid){
-	@include text-block-variant($width,$height,$vertical-align,$align-block);
+@mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@include block-variant($width,$height,$vertical-align,$align-block);
     cursor:pointer;
     text-decoration:inherit;
     &:hover { text-decoration:inherit;color:inherit; }
@@ -1121,7 +988,7 @@ $codykit-relative-empx:16px !global;
 }
 //ok
 @mixin label-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include text-block-variant($width,$height,$vertical-align,$align-block);
+	@include block-variant($width,$height,$vertical-align,$align-block);
 	margin:0;
 	padding:0;
 	> * {
@@ -1129,24 +996,9 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin menuitem-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include text-block-variant($width,$height,$vertical-align,$align-block);
-	@if $height {		
-		@if $border-width {
-			line-height: ($height - $border-width);
-		} @else {
-			line-height:$height;
-		}
-	} @else {
-		line-height:1;
-	}
-	cursor:pointer;
-	padding:0;
-	@content;
-}
 //ok
 @mixin background-block-variant($url,$width:false,$height:false,$bg-position:left center,$bg-size:false,$bg-repeat:false,$vertical-align:middle,$align-block:false){
-	@include text-block-variant($width,$height,$vertical-align,$align-block);
+	@include block-variant($width,$height,$vertical-align,$align-block);
     background-image:$url;
 	@if $bg-position {
 		background-position:$bg-position;
@@ -1179,7 +1031,7 @@ $codykit-relative-empx:16px !global;
 	}
 	cursor:pointer;
 	text-align:center;
-	@include select-variant(false);
+	@include user-select-variant(false);
 	@include ellipsis-variant(true);
     &:hover{ text-decoration:none; };
     &:active{ text-decoration:none; };
@@ -1206,7 +1058,7 @@ $codykit-relative-empx:16px !global;
 //nok
 @mixin image-button-variant($url,$width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
-	@include text-block-variant($width,$height,$vertical-align,$align-block);
+	@include block-variant($width,$height,$vertical-align,$align-block);
 	background-image:$url;
 	background-repeat:no-repeat;
     background-position:center center;
@@ -1230,7 +1082,7 @@ $codykit-relative-empx:16px !global;
 @mixin checkbox-variant($square-size:false,$vertical-align:middle,$align-block:false) {
 	@if $square-size != false {
 		@include appearance-variant(false);
-		@include text-block-variant($square-size,$square-size,$vertical-align,$align-block);    
+		@include block-variant($square-size,$square-size,$vertical-align,$align-block);    
 		cursor:pointer;
 	}
 	@content;
@@ -1249,7 +1101,7 @@ $codykit-relative-empx:16px !global;
     @include inline-block;
     vertical-align:middle;
     margin:0;
-    input[type                                                      = checkbox], input[type=radio] {
+    input[type=checkbox], input[type=radio] {
         @include no-appearance;
         position: absolute;
         overflow: hidden;
@@ -1260,7 +1112,7 @@ $codykit-relative-empx:16px !global;
         padding:0;
         border:0;
     }
-    input[type                                                      = checkbox], input[type=radio] {
+    input[type=checkbox], input[type=radio] {
         + span {
             @include icon-variant($url-default,$width + $gap,$height, left, $imageTop, $line-height);
         }
@@ -1269,7 +1121,7 @@ $codykit-relative-empx:16px !global;
         }
     }
     span {
-        @include select-variant(false);
+        @include user-select-variant(false);
         @include inline-block;
         cursor:pointer;
     }
@@ -1397,39 +1249,86 @@ $codykit-relative-empx:16px !global;
 	}
 }
 
-//ok
-@mixin image-frame-variant($width:auto,$height:auto) {
+@mixin centered-frame-variant($center-content,$width,$height,$overflow:visible){
     position:relative;
     width:$width;
     height:$height;
-    overflow:hidden;
-    img {
+    overflow:$overflow;
+    #{$center-content} {
         @include translate-center;
         min-width: 100%;
         min-height: 100%;
         margin: auto;
     }
+	@content;
+}
+@mixin image-frame-variant($width:auto,$height:auto) {
+	@include centered-frame-variant(img,$width,$height,hidden){
+		@content;
+	};
+}
+
+@mixin svg-frame-variant($width,$height) {
+	@include centered-frame-variant(svg,$width,$height){
+		svg {
+			max-width:100%;
+			max-height:100%;
+		}
+		@content;
+	};
 }
 //ok
 @mixin placeholder-variant {
-        &::-webkit-input-placeholder { /* WebKit browsers */
-		@content;
-        }
-        &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-           opacity:  1;
-	   @content;
-        }
-        &::-moz-placeholder { /* Mozilla Firefox 19+ */
-           opacity:  1;
-	   @content;
-        }
-        &:-ms-input-placeholder { /* Internet Explorer 10+ */
-	   @content;
-        }
+    &::-webkit-input-placeholder { /* WebKit browsers */
+	@content;
     }
-@mixin arrow-base-variant{
-	
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+       opacity:  1;
+   @content;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+       opacity:  1;
+   @content;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10+ */
+   @content;
+    }
 }
+@mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:10px) {
+	@if $thumb == false {
+		$thumb:#eee;
+	}
+	&::-webkit-scrollbar {
+	    width: $width;
+		height:$width;
+	}
+	&::-webkit-scrollbar-track {
+	    background-color:$track;
+	}
+	@if $thumb == auto {
+		&::-webkit-scrollbar-thumb {
+			background-color:transparent;
+			border-radius:$width;
+			margin:3px;
+			border:3px solid $track;
+		}
+		&:hover {
+			&::-webkit-scrollbar-thumb {
+				background-color:$hover;
+			}
+		}
+	} @else {
+		&::-webkit-scrollbar-thumb {
+			background-color:$thumb;
+			border-radius:$width;
+			border:3px solid $track;
+		}
+	}
+	&::-webkit-scrollbar-thumb:hover {
+	    background-color:$hover;
+	}
+}
+
 //ok
 @mixin arrow-variant($direction:left,$arrow-size:10px,$arrow-color:#ccc,$arrow-length:false){
 	border-style:solid;
@@ -1539,6 +1438,9 @@ $codykit-relative-empx:16px !global;
 }
 @mixin media-desktop-landscape {
 	@include media-over-width($codykit-desktop-landscape-width){ @content; };
+}
+@mixin media-desktop-landscape-lt {
+	@include media-less-width($codykit-desktop-landscape-width){ @content; };
 }
 @mixin pt-variant($photoshop-pt:0, $origin:72){
     font-size:(($photoshop-pt / $origin) * 96)px;
@@ -1665,7 +1567,7 @@ $codykit-relative-empx:16px !global;
 		vertical-align:$vertical-align;
 		&:after, &:before { content:none; };
     }
-	a, a:link, a:visited, a:hover, a:active {
+	a {
         display:inline;
         font-family:inherit;
         font-style: inherit;
@@ -1683,16 +1585,24 @@ $codykit-relative-empx:16px !global;
         min-width:$min-width;
 		font-family: Sans-Serif;
     }
-	script, style {
-		display:none !important;
-	}
     img {
         border:none;
     }
-    article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary, command, fieldset {
+    article, aside, details, dialog, figcaption, figure, footer, header, hgroup, main, nav, section, summary, command, fieldset {
         display:block;
 		margin:0;
     }
+	//chrome user agent styleseet fix
+	dialog {
+		position:static;
+		width:auto;
+		height:auto;
+		margin:initial;
+		padding:initial;
+		border:none;
+		background-color:white;
+		
+	}
 	@if $codykit-custom-elements {
 		#{$codykit-custom-elements} {
 	        display:block;
@@ -1704,8 +1614,8 @@ $codykit-relative-empx:16px !global;
         @include inline-block;
 		margin:0;
     }
-	template,.hidden,[hidden] {
-		display:none;
+	script, style, template, .hidden, [hidden] {
+		display:none !important;
 	}
 	[disabled] {
 		@include disabled-variant;
@@ -1730,8 +1640,9 @@ $codykit-relative-empx:16px !global;
 		list-style:none;
 		cursor:pointer;
 	}
-	dl,dd {
+	dl,dd,dt {
 		margin:0;
+		text-indent:0;
 	}
     label {
         cursor:inherit;
