@@ -1,0 +1,47 @@
+@import 'codykit';
+@include codykit-standard-fontsize(16px);
+html {
+	@include root-fontsize-variant(16px);
+}
+@include codykit-document-basic-config(false,false,true);
+
+.media-info {
+	@include media-mobile {
+		&:before {
+			content:"media-mobile";
+		}
+	}
+	@include media-mobile(2) {
+		&:before {
+			content:"media-mobile-2x";
+		}
+	}
+	@include media-tablet {
+		&:before {
+			content:"media-tablet";
+		}
+	}
+	@include media-tablet(2) {
+		&:before {
+			content:"media-tablet-2x";
+		}
+	}
+	@include media-desktop {
+		&:before {
+			content:"media-desktop";
+		}
+	}
+	@include media-desktop(2) {
+		&:before {
+			content:"media-desktop-2x";
+		}
+	}
+	&:after {
+		content:"media-1x";
+	}
+	@include media-default(2) {
+		&:after {
+			content:"media-2x";
+		}
+	}
+}
