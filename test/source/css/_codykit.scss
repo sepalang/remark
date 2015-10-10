@@ -1,4 +1,4 @@
-//CSS Toolkit :: Codykit version : 0.7.0
+//CSS Toolkit :: Codykit version : 0.7.1
 //auther : hojugn ahn (https://github.com/labeldock/codykit)
 
 $codykit-hack : false;
@@ -573,6 +573,13 @@ $codykit-relative-empx:16px !global;
 		}
 	}
 	
+	@if $x == all {
+		$x:0px;
+		$y:0px;
+		$r:0px;
+		$b:0px;
+	}
+	
 	@if $x { left:$x; }
 	@if $y { top:$y; }
 	@if $r { right:$r; }
@@ -718,22 +725,37 @@ $codykit-relative-empx:16px !global;
     background-color:$color;
 }
 @mixin background-position-variant($x:false,$y:false,$repeat:no-repeat){
-	background-repeat:$repeat;
 	@if $x and $y {
 		background-position:#{$x} #{$y};
 	} @else {
-		@if $x {
-			background-position:#{$x} top;
-		}
-		@if $y {
-			background-position:left #{$y};
+		@if $x != false and $y != false {
+			@if $x {
+				background-position:#{$x} top;
+			}
+			@if $y {
+				background-position:left #{$y};
+			}
 		}
 	}
+	background-repeat:$repeat;
 	@content;
+}
+@mixin imageset-variant($size,$x:false,$y:false,$repeat:no-repeat) {
+	@if $size == false {
+		background-size:auto;
+	} @else {
+		background-size:$size;
+	}
+	@include background-position-variant($x,$y,$repeat);
 }
 @mixin background-image-variant($url,$x:false,$y:false,$repeat:no-repeat){
 	background-image:$url;
 	@include background-position-variant($x,$y,$repeat);
+	@content;
+}
+@mixin background-imageset-variant($url,$size,$x:false,$y:false,$repeat:no-repeat){
+	background-image:$url; 
+	@include imageset-variant($size,$x,$y,$repeat);
 	@content;
 }
 @mixin clip-path-variant($clip-path){
