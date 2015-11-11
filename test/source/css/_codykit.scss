@@ -1,7 +1,8 @@
-//CSS Toolkit :: Codykit version : 0.7.1
+//CSS Toolkit :: Codykit version : 0.8.0
 //auther : hojugn ahn (https://github.com/labeldock/codykit)
 
 $codykit-hack : false;
+$codykit-disabled-opacity:0.7 !global;
 //media default option
 $codykit-tablet-width:768px;
 $codykit-desktop-width:1280px;
@@ -9,12 +10,21 @@ $codykit-desktop-width:1280px;
 $codykit-mobile-landscape-width:480px;
 $codykit-tablet-landscape-width:992px;
 $codykit-desktop-landscape-width:1920px;
-$codykit-custom-block-elements:"content,inventory,holder,placeholder,item,stack,category,group,control,tab,switch,case,modal";
-$codykit-custom-inline-block-elements:"unit";
+//codykit custom tag
+$codykit-custom-block-elements:"leaf,content,inventory,deck,item,sign,bundle,context,group,controls,tab,switch,case,modal,screen";
+$codykit-custom-inline-block-elements:"edge,unit";
+
 $codykit-preload-images:"" !global;
 $codykit-standard-empx:16px !global;
 $codykit-relative-empx:16px !global;
 
+@mixin focus($important:true) {
+	@if $important == true {
+		box-shadow:1px 1px 5px rgba(81, 203, 238, 1) !important;
+	} @else {
+		box-shadow:1px 1px 5px rgba(81, 203, 238, 1);
+	}
+}
 @mixin codykit-standard-fontsize($base-size:false){
 	@if $base-size != false {
 		$codykit-standard-empx:$base-size !global;
@@ -30,7 +40,7 @@ $codykit-relative-empx:16px !global;
 	@if $font-size == false {
 		font-size:1rem;
 	} @else {
-		font-size:#{$font-size / $codykit-standard-empx}rem;
+		font-size:#{$font-size / $codykit-relative-empx}rem;
 	}
 }
 //"width-height" is only use in this file
@@ -58,11 +68,11 @@ $codykit-relative-empx:16px !global;
 //ok
 @mixin block($width:false, $height:false, $align:false, $line-height:false){
     @include align-block($align, $width, $height);
-	
+
 	@if $line-height {
 		line-height:$line-height;
 	}
-	
+
 	@content;
 }
 //ok
@@ -73,17 +83,17 @@ $codykit-relative-empx:16px !global;
     }
     display:inline-block;
 	@include width-height($width,$height);
-	
+
 	@if $vertical-align == false {
 		vertical-align:middle;
 	} @else {
 		vertical-align:$vertical-align;
 	}
-	
+
 	@if $line-height {
 		line-height:$line-height;
 	}
-	
+
 	@content;
 }
 @mixin flex-flow-variant($direction:row, $wrap:wrap){
@@ -100,7 +110,7 @@ $codykit-relative-empx:16px !global;
 		flex-direction:column-reverse;
 	}
 	justify-content:space-between;
-	
+
 	@if $wrap == wrap or  $wrap == true {
 		flex-wrap:wrap;
 	}
@@ -120,7 +130,7 @@ $codykit-relative-empx:16px !global;
 	display: -webkit-inline-flex;
 	display: inline-flex;
 	vertical-align:middle;
-	
+
 	@include width-height($width,$height);
 	@include flex-flow-variant($direction,$wrap);
 	@content;
@@ -152,14 +162,14 @@ $codykit-relative-empx:16px !global;
 }
 
 @mixin flex-response-section($margin:10px) {
-	@include flex(false,false,column);
+	@include flex(false,false,row);
 	$flex-response-margin:$margin !global;
 	margin-left:-($flex-response-margin / 2);
 	margin-right:-($flex-response-margin / 2);
 	@content;
 }
 @mixin inline-flex-response-section($margin:10px) {
-	@include inline-flex(false,false,column);
+	@include inline-flex(false,false,row);
 	$flex-response-margin:$margin !global;
 	margin-left:-($flex-response-margin / 2);
 	margin-right:-($flex-response-margin / 2);
@@ -242,7 +252,7 @@ $codykit-relative-empx:16px !global;
 @mixin ellipsis-variant($flag:true,$line-height:false){
 	@if $flag == true {
 		@include word-wrap-variant(false,false,ellipsis);
-	} 
+	}
 	@if $flag == false {
 		@include word-wrap-variant(true);
 	}
@@ -272,12 +282,16 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin pointer-event-variant($flag:true){
+@mixin pointer-event-variant($flag:true,$cursor:false){
     @include user-select-variant($flag);
     @if $flag == false {
         pointer-events: none;
+		@if $cursor == true {
+			cursor:not-allowed;
+		}
     } @else {
         pointer-events: auto;
+		cursor:auto;
     }
 }
 //ok
@@ -300,7 +314,7 @@ $codykit-relative-empx:16px !global;
 		@include css3v($prop,calc(#{$initial-value} - #{$value * -1}),$fallback);
 	} @else {
 		@include css3v($prop,calc(#{$initial-value} + #{$value}),$fallback);
-	}   
+	}
 }
 @mixin calc-minus($prop,$value:0px,$fallback:false,$initial-value:100%){
 	@if $value < 0px {
@@ -372,7 +386,7 @@ $codykit-relative-empx:16px !global;
 	@include animation($name,$sec,$timing-function,$repeat);
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
-	
+
 }
 @mixin animation-reverse-to($name,$sec:0.3s,$timing-function:ease-in-out,$repeat:1) {
 	@include animation-to($name,$sec,$timing-function,$repeat);
@@ -384,17 +398,41 @@ $codykit-relative-empx:16px !global;
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
 }
-@mixin display-active($display:block,$active:".active") {
+@mixin disabled-variant($switch:true,$with-shadow:true) {
+	@if $switch == true {
+	    cursor: not-allowed;
+	    pointer-events: none;
+		@if $with-shadow == true {
+		    -webkit-box-shadow: none;
+		    box-shadow: none;
+		}
+	}
+}
+@mixin display-switch($switch:".active",$display:block) {
 	display:none;
-	&#{$active} {
+	&#{$switch} {
 		display:$display;
 		@content;
 	}
 }
-@mixin visibility-active($active:".active") {
+@mixin visibility-switch($switch:".active") {
     visibility:hidden;
-    &#{$active} {
+    &#{$switch} {
         visibility:visible;
+		@content;
+    }
+}
+@mixin disabled-switch($switch:".disabled,[disabled]") {
+    &#{$switch} {
+		@include disabled-variant;
+		opacity:$codykit-disabled-opacity;
+		@content;
+    }
+}
+@mixin readOnly-switch($switch:".readOnly,[readOnly]") {
+    &#{$switch} {
+		@include disabled-variant;
+		opacity:$codykit-disabled-opacity;
 		@content;
     }
 }
@@ -478,6 +516,7 @@ $codykit-relative-empx:16px !global;
         top: 50%;
     }
     @include translate(-50%,-50%);
+	@content;
 }
 //ok
 @mixin translate-center-horizontal($offset-x:false,$position:absolute) {
@@ -488,6 +527,7 @@ $codykit-relative-empx:16px !global;
         left: 50%;
     }
     @include translateX(-50%);
+	@content;
 }
 //ok
 @mixin translate-center-vertical($offset-y:false,$position:absolute) {
@@ -498,6 +538,7 @@ $codykit-relative-empx:16px !global;
         top: 50%;
     }
     @include translateY(-50%);
+	@content;
 }
 //ok
 @mixin relative($x:false,$y:false){
@@ -520,29 +561,34 @@ $codykit-relative-empx:16px !global;
 //ok
 @mixin absolute($x:false,$y:false,$r:false,$b:false){
 	position:absolute;
+
 	@if $x == right {
+		$right:$y;
+		$top:$r;
+
+		@if $right == false { $right:0px; }
+		@if $top == false { $top:0px; }
+
 		$x:false;
-		@if $y {
-			$r:$y;			
-		} @else {
-			$r:0;
-		}
-		$y:0;
+		$r:$right;
+		$y:$top;
 	}
-	
+
 	@if $x == left {
-		$x:false;
-		@if $y {
-			$x:$y;
-		} @else {
-			$x:0;
-		}
-		$y:0;
+		$left:$y;
+		$top:$r;
+
+		@if $left == false { $left:0px; }
+		@if $top == false { $top:0px; }
+
+		$x:$left;
+		$y:$top;
+		$r:false;
 	}
-	
+
 	@if $x == bottom {
 		@if $y == center {
-			
+
 			@if $r {
 				$b:$r;
 			} @else {
@@ -552,7 +598,7 @@ $codykit-relative-empx:16px !global;
 			$r:auto;
 			$y:auto;
 		} @elseif $y == left {
-			
+
 			@if $r {
 				$b:$r;
 			} @else {
@@ -572,14 +618,14 @@ $codykit-relative-empx:16px !global;
 			$y:auto;
 		}
 	}
-	
+
 	@if $x == all {
 		$x:0px;
 		$y:0px;
 		$r:0px;
 		$b:0px;
 	}
-	
+
 	@if $x { left:$x; }
 	@if $y { top:$y; }
 	@if $r { right:$r; }
@@ -590,7 +636,7 @@ $codykit-relative-empx:16px !global;
 	@if $y != false and $b != false {
 		height:auto;
 	}
-	
+
 }
 //ok
 @mixin absoluteX($x){
@@ -700,7 +746,7 @@ $codykit-relative-empx:16px !global;
 		} @else {
 			@include shadow-inset-variant(0px,0px,$blur,$color,$border-width);
 		}
-        
+
     }
 }
 //ok
@@ -753,8 +799,8 @@ $codykit-relative-empx:16px !global;
 	@include background-position-variant($x,$y,$repeat);
 	@content;
 }
-@mixin background-imageset-variant($url,$size,$x:false,$y:false,$repeat:no-repeat){
-	background-image:$url; 
+@mixin background-imageset-variant($url,$size,$x:center,$y:center,$repeat:no-repeat){
+	background-image:$url;
 	@include imageset-variant($size,$x,$y,$repeat);
 	@content;
 }
@@ -832,7 +878,7 @@ $codykit-relative-empx:16px !global;
 		}
 		background-position:#{$apply-offset} #{$apply-offset2};
 	}
-	
+
 	@content;
 }
 @mixin outer-image-variant($url:false,$icon-align:left,$icon-size:false,$icon-offset:false,$icon-offset2:false){
@@ -876,7 +922,7 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 //ok
-@mixin icon-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$line-height:false){
+@mixin icon-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){
     @include inline-block;
     background-image:$url;
 	background-repeat:no-repeat;
@@ -888,16 +934,14 @@ $codykit-relative-empx:16px !global;
     padding-left:$icon-width;
     min-width:$icon-width;
 	min-height:$icon-height;
-    @if $line-height == false {
-        line-height:$icon-height;
-    } @else {
-        line-height:$line-height;
-    }
+	@if $icon-size != false {
+		background-size:$icon-size;
+	}
 	//with content
 	@content;
 }
 //ok
-@mixin icon-right-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$line-height:false){
+@mixin icon-right-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){
     @include inline-block;
     background:$url;
 	background-repeat:no-repeat;
@@ -909,11 +953,9 @@ $codykit-relative-empx:16px !global;
     padding-right:$icon-width;
     min-width:$icon-width;
     min-height:$icon-height;
-    @if $line-height == false {
-        line-height:$icon-height;
-    } @else {
-        line-height:$line-height;
-    }
+	@if $icon-size != false {
+		background-size:$icon-size;
+	}
 	//with content
 	@content;
 }
@@ -930,6 +972,18 @@ $codykit-relative-empx:16px !global;
 	//with content
 	@content;
 }
+@mixin format-variant($width:false,$height:false){
+	@include inline-block($width,$height);
+	position:relative;
+	@content;
+}
+@mixin circle-variant($diameter){
+	width:$diameter;
+	height:$diameter;
+	line-height:$diameter;
+	border-radius:($diameter / 2);
+	@content;
+}
 @mixin presudo-variant($width:false,$height:false,$content:"",$vertical-align:false){
 	@include inline-block($width,$height,$vertical-align);
 	content:$content;
@@ -939,11 +993,11 @@ $codykit-relative-empx:16px !global;
 	@include presudo-variant($width,$height,$content,$vertical-align);
 	@content;
 }
-@mixin presudo-image-variant($image:false,$width:false,$height:false,$left:false,$top:false,$vertical-align:false){
+@mixin presudo-imageset-variant($content:"",$width:false,$height:false,$vertical-align:false){
 	@include presudo-variant($width,$height,"",$vertical-align);
-	@include background-image-variant($image,$left,$top);
+	@include background-imageset-variant($content,$width $height);
 	@content;
-}
+};
 
 
 @mixin list-variant($list-style:none,$list-style-position:inside){
@@ -961,7 +1015,7 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 //table cell에 의해 테이블 크기가 결정됩니다.
-@mixin cellbase-table-variant($spacing:0px,$border:false,$table-width:false,$table-layout:auto) {
+@mixin cellbase-table-variant($spacing:0px,$table-width:false,$table-layout:auto) {
     display:table;
     @if $table-width { width:$table-width; }
     table-layout:$table-layout;
@@ -972,13 +1026,11 @@ $codykit-relative-empx:16px !global;
         border-spacing:0px;
         border-collapse:collapse;
     }
-    @if $border {
-        border:$border;
-    }
+	@content;
 }
 //table 크기안에서 셀크기가 결정됩니다.
-@mixin fixed-table-variant($spacing:0px,$border:false) { @include cellbase-table-variant($spacing,$border,100%,fixed); }
-@mixin table-variant($spacing:0px,$border:false) { @include cellbase-table-variant($spacing,$border,100%,fixed); }
+@mixin fixed-table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
+@mixin table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
 @mixin border-radius($dirction,$radius){
 	@if $dirction == "top" {
 	    border-top-right-radius: $radius;
@@ -997,15 +1049,6 @@ $codykit-relative-empx:16px !global;
 	       border-top-left-radius: $radius;
 	}
 }
-//nok
-@mixin disabled-variant($switch:true) {
-	@if $switch == true {
-	    cursor: not-allowed;
-	    pointer-events: none;
-	    -webkit-box-shadow: none;
-	    box-shadow: none;
-	}
-}
 @mixin block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@if $align-block {
 		@include block($width,$height,$align-block);
@@ -1015,19 +1058,22 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 
-@mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include block-variant($width,$height,$vertical-align,$align-block);
-    cursor:pointer;
-    text-decoration:inherit;
-    &:hover { text-decoration:inherit;color:inherit; }
-	@content;
-}
-
 @mixin label-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include block-variant($width,$height,$vertical-align,$align-block);
 	@if $height {
 		line-height:$height;
 	}
+	@content;
+}
+
+@mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@include block-variant($width,$height,$vertical-align,$align-block);
+	@if $height {
+		line-height:$height;
+	}
+    cursor:pointer;
+    text-decoration:inherit;
+    &:hover { text-decoration:inherit;color:inherit; }
 	@content;
 }
 
@@ -1066,8 +1112,9 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin image-text-variant($url,$width:false,$height:false,$vertical-align:middle,$align-block:false,$bg-position:center center){
-	@include background-block-variant($url,$width,$height,$bg-position,auto,no-repeat,$vertical-align,$align-block);
+@mixin image-text-variant($url,$width:false,$height:false,$position-x:left,$position-y:center){
+	@include label-variant($width,$height);
+	@include background-image-variant($url,$position-x,$position-y);
     text-indent:-99999px;
 	@content;
 }
@@ -1095,7 +1142,7 @@ $codykit-relative-empx:16px !global;
 	} @else {
 		line-height:100%;
 	}
-	
+
 	@content;
 }
 //ok
@@ -1132,7 +1179,7 @@ $codykit-relative-empx:16px !global;
 @mixin checkbox-variant($square-size:false,$vertical-align:middle,$align-block:false) {
 	@if $square-size != false {
 		@include appearance-variant(false);
-		@include block-variant($square-size,$square-size,$vertical-align,$align-block);    
+		@include block-variant($square-size,$square-size,$vertical-align,$align-block);
 		cursor:pointer;
 	}
 	@content;
@@ -1301,6 +1348,7 @@ $codykit-relative-empx:16px !global;
 
 @mixin centered-frame-variant($center-content,$width,$height,$overflow:visible){
     position:relative;
+	@include inline-block;
     width:$width;
     height:$height;
     overflow:$overflow;
@@ -1318,47 +1366,69 @@ $codykit-relative-empx:16px !global;
 	};
 }
 
-@mixin svg-frame-variant($width,$height) {
-	@include centered-frame-variant(svg,$width,$height){
+@mixin svg-frame-variant($width,$height:false) {
+	@if $width == left or $width == false{
 		svg {
-			max-width:100%;
-			max-height:100%;
+			max-width:auto;
+			max-height:auto;
+			@if $width == left or $width == false {
+				top:0;
+				left:0;
+				@include translate(0px,0px);
+			}
 		}
-		@content;
-	};
+	} @else {
+		@include centered-frame-variant(svg,$width,$height){
+			svg {
+				max-width:100%;
+				max-height:100%;
+			}
+			@content;
+		};
+	}
 }
 //ok
 @mixin placeholder-variant {
-    &::-webkit-input-placeholder { /* WebKit browsers */
-	@content;
-    }
-    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-       opacity:  1;
-   @content;
-    }
-    &::-moz-placeholder { /* Mozilla Firefox 19+ */
-       opacity:  1;
-   @content;
-    }
-    &:-ms-input-placeholder { /* Internet Explorer 10+ */
-   @content;
-    }
-}
-@mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:10px) {
-	@if $thumb == false {
-		$thumb:#eee;
+	&::-webkit-input-placeholder { /* WebKit browsers */
+		@content;
 	}
+	&:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		opacity:  1;
+		@content;
+	}
+	&::-moz-placeholder { /* Mozilla Firefox 19+ */
+		opacity:  1;
+		@content;
+	}
+	&:-ms-input-placeholder { /* Internet Explorer 10+ */
+		@content;
+	}
+	&:placeholder-shown {
+		@content;
+	}
+}
+@mixin scrollbar-width-variant($width:10px) {
+	-webkit-overflow-scrolling:touch;
+	
 	&::-webkit-scrollbar {
 	    width: $width;
 		height:$width;
 	}
+	&::-webkit-scrollbar-thumb {
+		border-radius:$width;
+	}
+}
+@mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:10px,$radius:5px) {
+	@if $thumb == false {
+		$thumb:#eee;
+	}
+	@include scrollbar-width-variant($width);
 	&::-webkit-scrollbar-track {
 	    background-color:$track;
 	}
 	@if $thumb == auto {
 		&::-webkit-scrollbar-thumb {
 			background-color:transparent;
-			border-radius:$width;
 			margin:3px;
 			border:3px solid $track;
 		}
@@ -1370,7 +1440,6 @@ $codykit-relative-empx:16px !global;
 	} @else {
 		&::-webkit-scrollbar-thumb {
 			background-color:$thumb;
-			border-radius:$width;
 			border:3px solid $track;
 		}
 	}
@@ -1409,11 +1478,11 @@ $codykit-relative-empx:16px !global;
 @mixin media-over-width($over:false, $addition-queries:false) {
 	@if $over {
 		$query:"(min-width: #{$over})";
-		
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-		
+
 		@media #{$query} {
 			@content;
 		}
@@ -1422,12 +1491,12 @@ $codykit-relative-empx:16px !global;
 @mixin media-less-width($less:false, $addition-queries:false) {
 	@if $less {
 		$query:"(max-width: #{$less - 1})";
-		
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-		
-		
+
+
 		@media #{$query} {
 			@content;
 		}
@@ -1436,11 +1505,11 @@ $codykit-relative-empx:16px !global;
 @mixin media-inner-width($less:false, $over:false, $addition-queries:false) {
 	@if $less and $over {
 		$query:"(min-width: #{$less - 1}) and (max-width: #{$over})";
-		
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-		
+
 		@media #{$query} {
 			@content;
 		}
@@ -1449,11 +1518,11 @@ $codykit-relative-empx:16px !global;
 @mixin media-over-height($over:false, $addition-queries:false) {
 	@if $over {
 		$query:"(min-height: #{$over})";
-	
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-	
+
 		@media #{$query} {
 			@content;
 		}
@@ -1462,11 +1531,11 @@ $codykit-relative-empx:16px !global;
 @mixin media-less-height($less:false, $addition-queries:false) {
 	@if $less {
 		$query:"(max-height: #{$less - 1})";
-	
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-	
+
 		@media #{$query} {
 			@content;
 		}
@@ -1475,11 +1544,11 @@ $codykit-relative-empx:16px !global;
 @mixin media-inner-height($less:false, $over:false, $addition-queries:false) {
 	@if $less and $over {
 		$query:"(min-height: #{$less - 1}) and (max-height: #{$over})";
-	
+
 		@if $addition-queries {
-			$query:($addition-queries + " and " + $query);	
+			$query:($addition-queries + " and " + $query);
 		}
-		
+
 		@media #{$query} {
 			@content;
 		}
@@ -1597,7 +1666,7 @@ $codykit-relative-empx:16px !global;
 		-ms-overflow-style:scroll;
         overflow-scrolling:touch;
     } @else {
-        overflow-y:$overflow;
+        overflow-y:hidden;
 		-webkit-overflow-scrolling:none;
 		-ms-overflow-style:none;
         overflow-scrolling:none;
@@ -1609,9 +1678,9 @@ $codykit-relative-empx:16px !global;
 		-webkit-overflow-scrolling:touch;
 		-ms-overflow-style:scroll;
         overflow-scrolling:touch;
-		
+
     } @else if $overflow == false {
-        overflow-x:$overflow;
+        overflow-x:hidden;
 		-webkit-overflow-scrolling:none;
 		-ms-overflow-style:none;
         overflow-scrolling:none;
@@ -1629,19 +1698,21 @@ $codykit-relative-empx:16px !global;
         cursor: -moz-grabbing;
     }
 }
-@mixin response-section($response-horizental-padding:10px,$response-vertical-padding:0px){
+@mixin response-section($response-horizental-padding:10px,$response-vertical-padding:0px,$response-outer-margin:0px){
 	@include clearfix;
 	display:block;
 	width:auto;
 	box-sizing:border-box !important;
 	margin-left: -($response-horizental-padding/2);
 	margin-right: -($response-horizental-padding/2);
+	padding-left:$response-outer-margin;
+	padding-right:$response-outer-margin;
 	$response-horizental-padding:$response-horizental-padding !global;
 	$response-vertical-padding:$response-vertical-padding !global;
 	margin-top:-$response-vertical-padding;
 	@content;
 }
-@mixin response-column($width:100%,$main-content:false){
+@mixin response-column($width:100%,$height:false){
 	position:relative;
 	display:block;
 	float:left;
@@ -1649,28 +1720,23 @@ $codykit-relative-empx:16px !global;
 	box-sizing:border-box !important;
 	min-height:1px;
 	width:$width;
+	@if $height {
+		height:$height;
+	}
 	margin-left:0;
 	margin-right:0;
 	padding-left: ($response-horizental-padding / 2);
 	padding-right: ($response-horizental-padding / 2);
 	margin-top:$response-vertical-padding;
-	@if $main-content {
-		> #{$main-content} {
-			//@include aresponse-bsolutehorizentalinner-padding / 2),0response-horizentalinner-padding / 2),0);
-			position:relative;
-			@content;
-		}
-	} @else {
-		@content;
-	}
+	@content;
 }
 @mixin columns-section($gap:10px,$count:1){
 	-webkit-column-gap: $gap;
 	-moz-column-gap: $gap;
 	column-gap: $gap;
-	
+
 	//column-width:$min-width;
-	
+
 	-webkit-column-count: $count;
 	-moz-column-count: $count;
 	column-count: $count;
@@ -1710,9 +1776,9 @@ $codykit-relative-empx:16px !global;
 		$vertical-align:baseline;
 	}
 	//block text
-    h1,h2,h3,h4,h5,h6,p { 
-		margin:0px; 
-		font-size:inherit; 
+    h1,h2,h3,h4,h5,h6,p {
+		margin:0px;
+		font-size:inherit;
 		vertical-align:$vertical-align;
 	}
 	//inline text
@@ -1733,9 +1799,9 @@ $codykit-relative-empx:16px !global;
 		//vertical-align:inherit;
 		&:after, &:before { content:none; };
     }
-	
+
 	*:after, *:before { vertical-align:middle; };
-	
+
 	a {
         display:inline;
         font-family:inherit;
@@ -1761,10 +1827,13 @@ $codykit-relative-empx:16px !global;
     img {
         border:none;
     }
-    article, aside, details, dialog, figcaption, figure, footer, header, hgroup, main, nav, section, summary, command, fieldset {
+    section, article, header, footer, aside, details, summary, dialog, figcaption, figure, hgroup, main, nav, command, fieldset {
         display:block;
 		margin:0;
     }
+	header, footer, aside {
+		position:relative;
+	}
 	//chrome user agent styleseet fix
 	dialog {
 		position:static;
@@ -1774,13 +1843,14 @@ $codykit-relative-empx:16px !global;
 		padding:initial;
 		border:none;
 		background-color:white;
-		
+
 	}
 	@if $codykit-custom-block-elements {
 		#{$codykit-custom-block-elements} {
 	        display:block;
 			margin:0;
 			width:auto;
+			position:relative;
 	    }
 	}
 	@if $codykit-custom-inline-block-elements {
@@ -1789,7 +1859,7 @@ $codykit-relative-empx:16px !global;
 			margin:0;
 		}
 	}
-	
+
     audio,canvas,progress,video {
         @include inline-block;
 		margin:0;
@@ -1863,7 +1933,7 @@ $codykit-relative-empx:16px !global;
 	@if $font-smooth == true {
 		@include codykit-font-smooth;
 	}
-	
+
 }
 //deprecated
 @mixin codykit-document-basic-all($hack:true, $min-width:false) {
@@ -1872,32 +1942,6 @@ $codykit-relative-empx:16px !global;
 //deprecated
 @mixin codykit-document-basic-advence($hack:true, $min-width:false, $font-smooth:true) {
 	@include codykit-document-basic-config($hack,$min-width,$font-smooth);
-}
-@mixin codykit-document-vertical($main-wrapper:false,$min-width:false){
-	html,body {
-		width:100%;
-		height:100%;
-	}
-	html {
-		overflow-y:auto;
-		@if $min-width {
-			min-width:$min-width;
-			overflow-x:auto;
-		} @else {
-			max-width:100%;
-			overflow-x:hidden;
-		}
-	}
-	body {
-		@if $min-width {
-			min-width:$min-width;
-		}
-	}
-	@if $main-wrapper {
-		#{$main-wrapper} {
-			overflow-x:auto;
-		}
-	}
 }
 @mixin codykit-document-fullscreen($main-wrapper:false) {
 	html,body {
@@ -1910,7 +1954,9 @@ $codykit-relative-empx:16px !global;
 		max-height:100%;
     }
 	body {
-		@include scroll-variant(auto,false);
+		@include scroll-variant(false,false);
+		max-width:100%;
+		max-height:100%;
 	}
     @if $main-wrapper {
         #{$main-wrapper} {
@@ -1925,7 +1971,7 @@ $codykit-relative-empx:16px !global;
     }
 }
 
-@function preload-url($url){	
+@function preload-url($url){
 	$codykit-preload-images:#{$codykit-preload-images} url(#{$url}) !global;
 	@return url($url);
 }
