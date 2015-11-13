@@ -1,7 +1,28 @@
 # Codykit
 scss style sets
 
+
 ## Basic custom tag
+
+
+tag | description 
+--- | -----------
+content | 섹션요소의 부족한 정의 보충 
+well, leaf | 시각적 박스 컨텐츠
+inventory, deck, item | 컬랙션 구조 태그
+band | ui의 단위를 하나로 묶는 역할
+sign | 내용이 없는 시각적 컨텐츠
+bundle | 로케이션 혹은 컨트롤러의 역활의 세부 기능 단위
+context | 시각적 묶음 단위
+series | 색션 컨텐츠의 (조립 가능한) 세부 기능 단위
+formgroup | 상위 기능단위의 세부적인 컨트롤 묶음
+controls | 컨트롤 묶음의 컨트롤 ui
+tab | 탭
+switch, case | 스위치케이스
+modal  | dialog등의 스테이지
+screen | 스크롤 가능한 컨텐츠 랩퍼
+group  | deprecated
+
 ### content
 Section complementary element
 
