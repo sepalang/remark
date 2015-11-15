@@ -7,21 +7,21 @@ scss style sets
 
 tag | description 
 --- | -----------
-content | 섹션요소의 부족한 정의 보충 
-well, leaf | 시각적 박스 컨텐츠
+content | header,footer외의 컨텐츠 요소의 부족한 정의 보충 
+stage | content 내부의 그래픽적 박스 묶음 단위
+leaf | 시각적 박스 컨텐츠
 inventory, deck, item | 컬랙션 구조 태그
+part | (조립 가능한) 부분적이고 반복적인 UI요소 정의
 band | ui의 단위를 하나로 묶는 역할
 sign | 내용이 없는 시각적 컨텐츠
-bundle | 로케이션 혹은 컨트롤러의 역활의 세부 기능 단위
+bundle | 로케이션 혹은 컨트롤러의 역활의 서브 기능 단위
 context | 시각적 묶음 단위
-series | 색션 컨텐츠의 (조립 가능한) 세부 기능 단위
-formgroup | 상위 기능단위의 세부적인 컨트롤 묶음
+group | 상위 기능단위의 세부적인 컨트롤 묶음
 controls | 컨트롤 묶음의 컨트롤 ui
 tab | 탭
 switch, case | 스위치케이스
 modal  | dialog등의 스테이지
 screen | 스크롤 가능한 컨텐츠 랩퍼
-group  | deprecated
 
 ### content
 Section complementary element
@@ -33,28 +33,53 @@ Section complementary element
 	<footer></footer>
 </section>
 ```
+### stage
+```html
+Detail box
+<content>
+	<stage>
+		stage1
+	</stage>
+	<stage>
+		stage2
+	</stage>
+</content>
+```
+
 ### leaf
-Hidden content element
+Piece content element
 ```html
 <leaf>
 	Info messege
 </leaf>
 ```
-### inventory, deck, item, sign
-List content element
+### inventory, deck, item
+Column list content element
 ```html
 <inventory>
 	<deck>
 		<item>
-			<header>
-				Item title
-			</header>
-			<sign>
-				(Visual factor)
-			</sign>
+			Item 1
+		</item>
+	</deck>
+	<deck>
+		<item>
+			Item 2
 		</item>
 	</deck>
 </inventory>
+```
+### UI group
+```html
+<part>
+	<band>
+		<some-graphic></some-graphic>
+		<some-graphic></some-graphic>
+	</band>
+	<sign>
+		<p class="legend"></p>
+	</sign>
+</part>
 ```
 ### bundle, context, group, controls
 Form factor element

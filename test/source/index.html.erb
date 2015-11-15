@@ -1,41 +1,66 @@
 <h1>Media test</h1>
-<div class="media-info"> | </div>
+<article>
+	<div class="media-info"> | </div>
+</article>
 
 <h1>Semantic test</h1>
-<section>
+<article>
 	<h2>[Paragraph factor] content</h2>
 	<content>
 		<section>
-			<header></header>
-			<content></content>
-			<footer></footer>
+			<header>Title..</header>
+			<content>
+				<p>description..</p>
+			</content>
+			<footer>
+				<button>action..</button>
+			</footer>
 		</section>
 	</content>
-</section>
-<section>
-	<h2>[Hidden factor] leaf</h2>
+</article>
+<article>
+	<h2>[Detail box]</h2>
 	<content>
-		<leaf> Leaf content </leaf>
+		<stage>
+			<p>content</p>
+		</stage>
+		<stage>
+			<p>content2</p>
+		</stage>
 	</content>
-</section>
-<section>
-	<h2>[List factor] inventory, deck, item, sign</h2>
+</article>
+<article>
+	<h2>[Piece content] leaf</h2>
+	<content>
+		<leaf> 
+			<h3>Leaf title</h3>
+			<p>Leaf content..</p>
+		</leaf>
+	</content>
+</article>
+<article>
+	<h2>[Column list factor] inventory, deck, item</h2>
 	<content>
 		<inventory>
 			<deck>
 				<item>
-					<header>
-						Item title
-					</header>
-					<sign>
-						(Visual factor)
-					</sign>
+					Item 1
+				</item>
+			</deck>
+			<deck>
+				<item>
+					Item 2
+				</item>
+			</deck>
+			<deck>
+				<item>
+					Item 3
 				</item>
 			</deck>
 		</inventory>
 	</content>
-</section>
-<section>
+</article>
+<article>
 	<h2>[Form factor] bundle, context, group, controls</h2>
 	<content>
 		<bundle>
@@ -52,8 +77,22 @@
 			</context>
 		</bundle>
 	</content>
-</section>
-<section>
+</article>
+<article>
+	<h2>[UI Group]</h2>
+	<content>
+		<part>
+			<band>
+				<some-graphic></some-graphic>
+				<some-graphic></some-graphic>
+			</band>
+			<sign>
+				<p class="legend"></p>
+			</sign>
+		</part>
+	</content>
+</article>
+<article>
 	<h2>[Tab factor] tab, swtich, case</h2>
 	<content>
 		<tab>
@@ -73,8 +112,8 @@
 			</case>
 		</switch>
 	</content>
-</section>
-<section>
+</article>
+<article>
 	<h2>[Modal factor] modal</h2>
 	<content>
 		<modal>
@@ -90,12 +129,12 @@
 			</dialog>
 		</modal>
 	</content>
-</section>
-<section>
+</article>
+<article>
 	<h2>[Scroll content] screen</h2>
 	<content>
 		<screen>
 			Screen content
 		</screen>
 	</content>
-</section>
+</article>
