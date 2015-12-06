@@ -1,4 +1,4 @@
-//CSS Toolkit :: Codykit version : 0.8.3
+//CSS Toolkit :: Codykit version : 0.8.8
 //auther : hojugn ahn (https://github.com/labeldock/codykit)
 
 $codykit-hack : false;
@@ -15,11 +15,11 @@ $codykit-preload-images:"" !global;
 $codykit-standard-empx:16px !global;
 $codykit-relative-empx:16px !global;
 
-@mixin focus($important:true) {
+@mixin focus($color:rgba(81, 203, 238, 1),$important:true) {
 	@if $important == true {
-		box-shadow:1px 1px 5px rgba(81, 203, 238, 1) !important;
+		box-shadow:1px 1px 5px $color !important;
 	} @else {
-		box-shadow:1px 1px 5px rgba(81, 203, 238, 1);
+		box-shadow:1px 1px 5px $color;
 	}
 }
 @mixin codykit-standard-fontsize($base-size:false){
@@ -45,6 +45,12 @@ $codykit-relative-empx:16px !global;
     @if $width != false  { width:$width; }
     @if $height != false { height:$height; }
 }
+@mixin vertical($height:100%,$width:1px){
+	@include width-height($width,$height);
+}
+@mixin horizontal($width:100%,$height:1px){
+	@include width-height($width,$height);
+}
 //ok
 @mixin align-block($align:left, $width:false, $height:false){
     display:block;
@@ -63,8 +69,8 @@ $codykit-relative-empx:16px !global;
     @include width-height($width,$height);
 }
 //ok
-@mixin block($width:false, $height:false, $align:false, $line-height:false){
-    @include align-block($align, $width, $height);
+@mixin block($width:false, $height:false, $align-block:false, $line-height:false){
+    @include align-block($align-block, $width, $height);
 
 	@if $line-height {
 		line-height:$line-height;
@@ -90,6 +96,16 @@ $codykit-relative-empx:16px !global;
 	@if $line-height {
 		line-height:$line-height;
 	}
+	@content;
+}
+@mixin stage-variant($width:false,$height:false,$align-block:false,$line-height:false){
+	@include block($width,$height,$align-block,$line-height);
+	position:relative;
+	@content;
+}
+@mixin inline-stage-variant($width:false,$height:false,$vertical-align:false,$line-height:false){
+	@include inline-block($width,$height,$vertical-align,$line-height);
+	position:relative;
 	@content;
 }
 @mixin flex-flow-variant($direction:row, $wrap:wrap){
@@ -986,6 +1002,19 @@ $codykit-relative-empx:16px !global;
 	@include presudo-variant($width,$height,$content,$vertical-align);
 	@content;
 }
+@mixin presudo-wrap-content($before,$after){
+	&:before {
+		@include presudo-content-variant($before);
+		vertical-align:baseline;
+		@content;
+	}
+	&:after {
+		@include presudo-content-variant($after);
+		vertical-align:baseline;
+		@content;
+	}
+	
+}
 @mixin presudo-imageset-variant($content:"",$width:false,$height:false,$vertical-align:false){
 	@include presudo-variant($width,$height,"",$vertical-align);
 	@include background-imageset-variant($content,$width $height);
@@ -1059,11 +1088,6 @@ $codykit-relative-empx:16px !global;
 	@if $height {
 		line-height:$height;
 	}
-	@content;
-}
-@mixin format-variant($width:false,$height:false){
-	@include inline-block($width,$height);
-	position:relative;
 	@content;
 }
 @mixin circle-variant($diameter){
@@ -1198,6 +1222,7 @@ $codykit-relative-empx:16px !global;
 //ok
 @mixin input-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include clear-block-variant($width,$height,$vertical-align,$align-block);
+	padding:0 10px;
 	//webkit cursor fix
 	line-height:100%;
 	@content;
@@ -1316,6 +1341,7 @@ $codykit-relative-empx:16px !global;
 	@if $side == left or $side == right {
 		@if $start == bottom {
 			bottom:(0px - $height - $offset-y);
+			top:auto;
 			@include translateY(0%);
 		} @else if $start == center {
 			@if $offset-y != 0px {
@@ -1745,7 +1771,7 @@ $codykit-relative-empx:16px !global;
 	margin-top:-$response-vertical-padding;
 	@content;
 }
-@mixin response-column($width:100%,$height:false){
+@mixin response-column($width:auto,$height:false){
 	position:relative;
 	display:block;
 	float:left;
@@ -1830,10 +1856,12 @@ $codykit-relative-empx:16px !global;
 		//test
 		//vertical-align:$vertical-align;
 		//vertical-align:inherit;
-		&:after, &:before { content:none; };
+		&:after, &:before { 
+			content:none; 
+		};
     }
 
-	*:after, *:before { vertical-align:middle; };
+	*:after, *:before { vertical-align:baseline; };
 
 	a {
         display:inline;
@@ -1957,7 +1985,12 @@ $codykit-relative-empx:16px !global;
 }
 @mixin codykit-extend-tag($custom-block-elements:false,$custom-inlineblock-elements:false,$codykit-setup:false){
 	@if $codykit-setup {
-		content,stage,leaf,inventory,deck,item,bundle,context,group,controls,part,band,sign,tab,switch,case,modal,screen {
+		content,stage,leaf,inventory,deck,item,context,group,controls,part,band,sign,tab,switch,case,modal,screen {
+			@include codykit-block-variant;
+		}
+		
+		//deprecated
+		bundle {
 			@include codykit-block-variant;
 		}
 		
@@ -1972,7 +2005,7 @@ $codykit-relative-empx:16px !global;
 		switch {
 			> case {
 		        display:none;
-				&.active, &[ng-switch-when], &[ng-switch-default], &[ng-if] {
+				&.active, &[ng-switch-when], &[ng-switch-default], &[ng-if], &[ng-show] {
 					display:block;
 				}
 			}
@@ -2006,6 +2039,8 @@ $codykit-relative-empx:16px !global;
 			max-width:100%;
 			max-height:100%;
 			overflow:auto;
+			width:100%;
+			height:100%;
 		}
 		
 		edge,format,badge,unit{

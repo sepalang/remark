@@ -8,13 +8,12 @@ scss style sets
 tag | description 
 --- | -----------
 content | header,footer외의 컨텐츠 요소의 부족한 정의 보충 
-stage | content 내부의 그래픽적 박스 묶음 단위
-leaf | 시각적 박스 컨텐츠
+stage | section안의 시각적 박스 묶음 단위
+leaf | 중간 단락의 박스 컨텐츠
 inventory, deck, item | 컬랙션 구조 태그
 part | (조립 가능한) 부분적이고 반복적인 UI요소 정의
 band | ui의 단위를 하나로 묶는 역할
 sign | 내용이 없는 시각적 컨텐츠
-bundle | 로케이션 혹은 컨트롤러의 역활의 서브 기능 단위
 context | 시각적 묶음 단위
 group | 상위 기능단위의 세부적인 컨트롤 묶음
 controls | 컨트롤 묶음의 컨트롤 ui
@@ -22,6 +21,10 @@ tab | 탭
 switch, case | 스위치케이스
 modal  | dialog등의 스테이지
 screen | 스크롤 가능한 컨텐츠 랩퍼
+
+## Deprecated
+(section) bundle
+
 
 ### content
 Section complementary element
@@ -81,10 +84,10 @@ Column list content element
 	</sign>
 </part>
 ```
-### bundle, context, group, controls
+### context, group, controls
 Form factor element
 ```html
-<bundle>
+<section>
 	<context>
 		<group>
 			<header>
@@ -96,7 +99,7 @@ Form factor element
 			</controls>
 		</group>
 	</context>
-</bundle>
+</section>
 ```
 ### tab, switch, case
 Switch content element
