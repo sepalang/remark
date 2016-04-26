@@ -4,7 +4,7 @@ html {
 	@include root-fontsize-variant(16px);
 }
 @include codykit-document-basic-config(false,false,true);
-
+@include codykit-media-trace();
 .media-info {
 	@include media-mobile {
 		&:before {

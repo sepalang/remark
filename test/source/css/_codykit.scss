@@ -1,29 +1,53 @@
 @charset "UTF-8";
-//CSS Toolkit :: Codykit version : 0.9.0
-//auther : hojugn ahn (https://github.com/labeldock/codykit)
-
-$codykit-hack : false;
-$codykit-disabled-opacity:0.7 !global;
-//media default option
-$codykit-tablet-width:768px;
-$codykit-desktop-width:1280px;
-//media detail option
-$codykit-mobile-landscape-width:480px;
-$codykit-tablet-landscape-width:992px;
-$codykit-desktop-landscape-width:1920px;
-
-$codykit-preload-images:"" !global;
-$codykit-standard-empx:16px !global;
-$codykit-relative-empx:16px !global;
-
-
-@mixin focus($color:false,$important:true) {
-	@if $important == true {
-		box-shadow:1px 1px 5px ($color or rgba(81, 203, 238, 1)) !important;
-	} @else {
-		box-shadow:1px 1px 5px ($color or rgba(81, 203, 238, 1));
-	}
+//CSS Toolkit :: Codykit version : 0.15.0
+//auther : hojung ahn (https://github.com/labeldock/codykit)
+@if global-variable-exists(codykit-hack){ $codykit-hack:$codykit-hack !global; } @else {
+	$codykit-hack:false !global;
 }
+@if global-variable-exists(codykit-disabled-opacity){ $codykit-disabled-opacity:$codykit-disabled-opacity !global; } @else {
+	$codykit-disabled-opacity:0.7 !global;
+}
+
+//media default option (width start)
+@if global-variable-exists(codykit-tablet-width){ $codykit-tablet-width:$codykit-tablet-width !global; } @else {
+	$codykit-tablet-width:768px !global;
+}
+@if global-variable-exists(codykit-desktop-width){ $codykit-desktop-width:$codykit-desktop-width !global; } @else {
+	$codykit-desktop-width:1200px !global;
+}
+
+//media detail option (width start)
+@if global-variable-exists(codykit-mobile-landscape-width){ $codykit-mobile-landscape-width:$codykit-mobile-landscape-width !global; } @else {
+	$codykit-mobile-landscape-width:480px !global;
+}
+@if global-variable-exists(codykit-tablet-landscape-width){ $codykit-tablet-landscape-width:$codykit-tablet-landscape-width !global; } @else {
+	$codykit-tablet-landscape-width:992px !global;
+}
+@if global-variable-exists(codykit-desktop-landscape-width){ $codykit-desktop-landscape-width:$codykit-desktop-landscape-width !global; } @else {
+	$codykit-desktop-landscape-width:1920px !global;
+}
+
+@if global-variable-exists(codykit-preload-images){ $codykit-preload-images:$codykit-preload-images !global; } @else {
+	$codykit-preload-images:"" !global;
+}
+@if global-variable-exists(codykit-standard-empx){ $codykit-standard-empx:$codykit-standard-empx !global; } @else {
+	$codykit-standard-empx:16px !global;
+}
+@if global-variable-exists(codykit-relative-empx){ $codykit-relative-empx:$codykit-relative-empx !global; } @else {
+	$codykit-relative-empx:16px !global;
+}
+
+//usage [$mobile-vetical-limit, $mobile-limit, $tablet-vertical-limit, $tablet-limit];
+//@include codykit-media-width(480px,768px,992px,1200px);
+@mixin codykit-media-width($mobile-vetical-limit, $mobile-limit, $tablet-vertical-limit, $tablet-limit){
+	$codykit-mobile-landscape-width:$mobile-vetical-limit !global;
+	$codykit-tablet-width:$mobile-limit !global;
+	$codykit-tablet-landscape-width:$tablet-vertical-limit !global;
+	$codykit-desktop-width:$tablet-limit !global;
+	@content;
+}
+
+
 @mixin focus-variant($flag:true,$color:false){
 	@if $flag == false {
 		&:focus {
@@ -35,11 +59,25 @@ $codykit-relative-empx:16px !global;
 		}
 	}
 }
-@mixin cubic($color:false){
-	min-width:10px;
-	min-height:10px;
-	@include focus($color);
+
+@mixin focus($color:false,$size:false,$inset:false) {
+	@if $inset == true or $inset == inset {
+		box-shadow:inset 0px 0px ($size or 5px) ($color or rgba(81, 203, 238, 1));
+	} @else {
+		box-shadow:0px 0px ($size or 5px) ($color or rgba(81, 203, 238, 1));
+	}
 }
+
+@mixin when($parent,$parent-state) {
+	@each $state in $parent-state {
+		$rep:selector-replace(&, $parent, #{$parent+$state});
+		@at-root #{$rep} {
+			
+	        @content;
+	    }
+	}
+}
+
 @mixin codykit-standard-fontsize($base-size:false){
 	@if $base-size != false {
 		$codykit-standard-empx:$base-size !global;
@@ -93,7 +131,7 @@ $codykit-relative-empx:16px !global;
 	@if $line-height {
 		line-height:$line-height;
 	}
-	
+
 	@content;
 }
 @mixin inline-block($width:false, $height:false,$vertical-align:false,$line-height:false){
@@ -115,6 +153,7 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
+//stage는 relative block 입니다.
 @mixin stage-variant($width:false,$height:false,$align-block:false,$line-height:false){
 	@include block($width,$height,$align-block,$line-height);
 	position:relative;
@@ -237,6 +276,9 @@ $codykit-relative-empx:16px !global;
         clear:both;
     }
 }
+@mixin inlinefix($line-height:100%){
+	line-height:$line-height;
+}
 @mixin white-space-variant($flag:true,$scroll:false){
 	@if $flag == true{
 		white-space: normal;
@@ -248,6 +290,22 @@ $codykit-relative-empx:16px !global;
 	} @else {
 		max-width:auto;
 	}
+}
+@mixin word-break-variant($flag:true,$text-overflow:clip) {
+    @if $flag == true{
+	    white-space: normal;
+		word-break:break-all;
+        text-overflow: initial;
+        -o-text-overflow: initial;
+        -ms-text-overflow: initial;
+    }
+    @if $flag == false{
+    	white-space: nowrap;
+		word-break:keep-all;
+	    text-overflow: $text-overflow;
+	    -o-text-overflow: $text-overflow;
+	    -ms-text-overflow: $text-overflow;
+    }
 }
 @mixin word-wrap-variant($flag:true,$overflow:false,$text-overflow:clip) {
 	@if $flag == true{
@@ -277,24 +335,28 @@ $codykit-relative-empx:16px !global;
 	    -ms-text-overflow: $text-overflow;
 	}
 }
-@mixin ellipsis-variant($flag:true,$line-height:false){
+@mixin ellipsis-variant($flag:true,$overflow:false){
 	@if $flag == true {
-		@include word-wrap-variant(false,false,ellipsis);
+		@include word-wrap-variant(false,$overflow,ellipsis);
 	}
 	@if $flag == false {
 		@include word-wrap-variant(true);
 	}
-	@if $line-height {
-		line-height:$line-height;
-	}
 }
-@mixin user-select-variant($flag:true) {
-	@if $flag == true {
-		-webkit-touch-callout: auto;
-		@include css3f(user-select, auto);
-	} @else {
+@mixin omission-variant($max-width:100%){
+	max-width:$max-width;
+	@include ellipsis-variant(true);
+}
+@mixin user-select-variant($flag:auto) {
+	@if $flag == false or $flag == none {
 		-webkit-touch-callout: none;
 		@include css3f(user-select, none);
+	} @else {
+		@if $flag == true {
+			$flag:auto;
+		}
+		-webkit-touch-callout: auto;
+		@include css3f(user-select, auto);
 	}
 }
 @mixin appearance-variant($flag:true){
@@ -310,25 +372,33 @@ $codykit-relative-empx:16px !global;
 	}
 	@content;
 }
-@mixin pointer-event-variant($flag:true,$cursor:false){
-    @include user-select-variant($flag);
-    @if $flag == false {
+@mixin pointer-events-variant($flag:true,$cursor:false){
+
+    @if $flag == false or $flag == none {
         pointer-events: none;
 		@if $cursor == true {
 			cursor:not-allowed;
 		}
+		@include user-select-variant(false);
     } @else {
-        pointer-events: auto;
-		cursor:auto;
+		@if $flag == true {
+			$flag:auto;
+		}
+        pointer-events:$flag;
+		@if $cursor == true {
+			cursor:auto;
+		}
+		@include user-select-variant(true);
     }
 }
 @mixin css3v($name,$value,$fallback:false){
-    @if $fallback { 
-		#{$name}:#{$fallback}; 
+    @if $fallback {
+		#{$name}:#{$fallback};
 	}
-    #{$name} : #{"-webkit-"}$value;
-    #{$name} : #{"-moz-"}$value;
-    #{$name} : #{"-ms-"}$value;
+
+    #{$name} : unquote('-webkit-#{$value}');
+    #{$name} : unquote('-moz-#{$value}');
+    #{$name} : unquote('-ms-#{$value}');
     #{$name} : $value;
 }
 @mixin css3f($name,$value){
@@ -524,9 +594,7 @@ $codykit-relative-empx:16px !global;
 }
 @mixin translate-center($offset-x:false,$offset-y:false,$position:absolute) {
     position: $position;
-	offsetx:$offset-x;
-	offsety:$offset-y;
-	
+
     @if $offset-x {
 		@include calc(left,50%,$offset-x,50%);
     } @else {
@@ -561,18 +629,29 @@ $codykit-relative-empx:16px !global;
 	@content;
 }
 @mixin relative($x:false,$y:false){
-	position:relative;
-	@if $x { left:$x; }
-	@if $y { top:$y; }
+	@if $x == auto or $x == initial{
+		left:$x;
+		top:$x;
+		right:$x;
+		bottom:$x;
+	} @else {
+		position:relative;
+		@if $x { left:$x; }
+		@if $y { top:$y; }
+	}
+	@content;
 }
 @mixin relativeX($x){
     @include relative($x);
+	@content;
 }
 @mixin relativeY($y){
     @include relative(false,$y);
+	@content;
 }
 @mixin relative-center($offset-x:false) {
     @include translate-center-horizontal($offset-x,relative);
+	@content;
 }
 @mixin absolute($x:false,$y:false,$r:false,$b:false){
 	position:absolute;
@@ -599,8 +678,39 @@ $codykit-relative-empx:16px !global;
 		$y:$top;
 		$r:false;
 	}
+	@elseif $x == top {
+		$top:false;
+		$left:false;
+		$right:false;
+		@if $y == full {
+			$top:$r or 0px;
+			$left:$b or 0px;
+			$right:$b or 0px;
+		} @elseif $y == center {
+			$top:$r or 0px;
+			$left:auto;
+			$right:auto;
+		} @elseif $y == right {
+			$top:$r or 0px;
+			$left:auto;
+			$right:$b or 0px;
+		} @elseif $y == left {
+			$top:$r or 0px;
+			$left:$b or 0px;
+			$right:auto;
+		} @else {
+			$top:$y or 0px;
+			$left:$r or 0px;
+			$right:auto;
+		}
+
+		$x:$left;
+		$y:$top;
+		$r:$right;
+		$b:auto;
+	}
 	@elseif $x == bottom {
-		
+
 		$bottom:false;
 		$left:false;
 		$right:false;
@@ -625,13 +735,13 @@ $codykit-relative-empx:16px !global;
 			$left:$r or 0px;
 			$right:auto;
 		}
-		
+
 		$x:$left;
 		$y:auto;
 		$r:$right;
 		$b:$bottom;
 	}
-	@elseif $x == all {
+	@elseif $x == all or $x == full {
 		$x:0px;
 		$y:0px;
 		$r:0px;
@@ -648,13 +758,15 @@ $codykit-relative-empx:16px !global;
 	@if $y != false and $b != false {
 		height:auto;
 	}
-
+	@content;
 }
 @mixin absoluteX($x){
     @include absolute($x);
+	@content;
 }
 @mixin absoluteY($y){
     @include absolute(false,$y);
+	@content;
 }
 @mixin visibility($flag:true){
 	@if $flag == true {
@@ -791,13 +903,13 @@ $codykit-relative-empx:16px !global;
 	background-repeat:$repeat;
 	@content;
 }
-@mixin imageset-variant($size,$x:false,$y:false,$repeat:no-repeat) {
+@mixin imageset-variant($size,$x:false,$y:false,$repeat:false) {
 	@if $size == false or $size == 'false false' {
 		background-size:auto;
 	} @else {
 		background-size:$size;
 	}
-	@include background-position-variant($x,$y,$repeat);
+	@include background-position-variant($x,$y,($repeat or no-repeat));
 }
 @mixin background-image-variant($url,$x:false,$y:false,$repeat:no-repeat){
 	background-image:$url;
@@ -977,7 +1089,7 @@ $codykit-relative-empx:16px !global;
 @mixin presudo-variant($width:false,$height:false,$content:"",$vertical-align:false){
 	content:$content;
 	@if type_of($content) == "string" {
-		@include inline-block($width,$height,$vertical-align or baseline);
+		@include inline-block($width,$height,$vertical-align or middle);
 	} @else {
 		@include inline-block($width,$height,$vertical-align);
 	}
@@ -998,15 +1110,17 @@ $codykit-relative-empx:16px !global;
 		vertical-align:baseline;
 		@content;
 	}
-	
+
+}
+@mixin presudo-image-variant($content:"",$width:false,$height:false,$vertical-align:false){
+	@include presudo-variant($width,$height,"",$vertical-align);
+	@include background-image-variant($content,center,center);
 }
 @mixin presudo-imageset-variant($content:"",$width:false,$height:false,$vertical-align:false){
 	@include presudo-variant($width,$height,"",$vertical-align);
 	@include background-imageset-variant($content,$width $height);
 	@content;
 };
-
-
 @mixin list-variant($list-style:none,$list-style-position:inside){
     margin:0px;
     padding:0px;
@@ -1089,7 +1203,7 @@ $codykit-relative-empx:16px !global;
 		@include inline-block(false,$height);
 		min-width:$width;
 	}
-	
+
 	@if $radius == true {
 		@if $height {
 			border-radius:($height / 2);
@@ -1099,9 +1213,9 @@ $codykit-relative-empx:16px !global;
 	} @else if (type-of($radius) == number){
 		border-radius:$radius;
 	}
-	
-	@include word-wrap-variant($wordwrap);
-	
+
+	@include word-wrap-variant($wordwrap,visible);
+
 	@if $height {
 		line-height:$height;
 	}
@@ -1170,9 +1284,20 @@ $codykit-relative-empx:16px !global;
 	cursor:pointer;
 	text-align:center;
 	@include user-select-variant(false);
-	@include ellipsis-variant(true);
+	//TODO:TEST ellpisis and  visible
+	@include ellipsis-variant(true,visible);
     &:hover{ text-decoration:none; };
     &:active{ text-decoration:none; };
+}
+@mixin link-variant(){
+	background-color:transparent;
+	border-color:transparent;
+	text-decoration:none;
+	@include ellipsis-variant(true,visible);
+	&:hover {
+		text-decoration:underline;
+	}
+	@content;
 }
 @mixin button-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
@@ -1182,7 +1307,6 @@ $codykit-relative-empx:16px !global;
 	} @else {
 		line-height:100%;
 	}
-
 	@content;
 }
 @mixin padding-button-variant($padding:3px 3px 3px 3px,$vertical-align:middle,$align-block:false){
@@ -1198,6 +1322,7 @@ $codykit-relative-empx:16px !global;
 	background-image:$url;
 	background-repeat:no-repeat;
     background-position:center center;
+	background-color:transparent;
     text-indent:-99999px;
 	@content;
 }
@@ -1370,12 +1495,6 @@ $codykit-relative-empx:16px !global;
     @include outside-position-variant($side,$start,$width,$height,$offset-x,$offset-y);
 	@content;
 }
-@mixin presudo-image-variant($url,$axis:false,$width:auto,$height:auto,$offset-x:false,$offset-y:false,$bg-position-left:false,$bg-position-right:false){
-    @include presudo-position-variant($axis,$width,$height,$offset-x,$offset-y) {
-		@include background-image-variant($url,$bg-position-left,$bg-position-right);
-		@content;
-    };
-}
 @mixin presudo-outside-image-variant($url,$side,$start,$width,$height,$offset-x:false,$offset-y:false,$bg-position-left:false,$bg-position-right:false){
     @include presudo-outside-position-variant($side,$start,$width,$height,$offset-x,$offset-y) {
 		@include background-image-variant($url,$bg-position-left,$bg-position-right);
@@ -1443,9 +1562,8 @@ $codykit-relative-empx:16px !global;
 		@content;
 	}
 }
-@mixin scrollbar-width-variant($width:10px) {
+@mixin scrollbar-width-variant($width:17px) {
 	-webkit-overflow-scrolling:touch;
-	
 	&::-webkit-scrollbar {
 	    width: $width;
 		height:$width;
@@ -1454,19 +1572,28 @@ $codykit-relative-empx:16px !global;
 		border-radius:$width;
 	}
 }
-@mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:10px,$radius:5px) {
+@mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:17px,$radius:2px) {
 	@if $thumb == false {
 		$thumb:#eee;
 	}
+	
+	// ms scroll bar 
+	-ms-overflow-style: scrollbar;
+	scrollbar-base-color: $track;
+	scrollbar-arrow-color: $thumb;
+
+	// webkit scroll bar
 	@include scrollbar-width-variant($width);
+	
 	&::-webkit-scrollbar-track {
 	    background-color:$track;
 	}
 	@if $thumb == auto {
 		&::-webkit-scrollbar-thumb {
 			background-color:transparent;
-			margin:3px;
-			border:3px solid $track;
+			margin:2px;
+			border:2px solid $track;
+			border-radius:$radius;
 		}
 		&:hover {
 			&::-webkit-scrollbar-thumb {
@@ -1476,12 +1603,23 @@ $codykit-relative-empx:16px !global;
 	} @else {
 		&::-webkit-scrollbar-thumb {
 			background-color:$thumb;
-			border:3px solid $track;
+			border:2px solid $track;
+			border-radius:$radius;
 		}
 	}
 	&::-webkit-scrollbar-thumb:hover {
 	    background-color:$hover;
 	}
+}
+
+@mixin screen-variant {
+	@include scrollbar-variant;
+	max-width:100%;
+	max-height:100%;
+	overflow:auto;
+	width:100%;
+	height:100%;
+	@content;
 }
 
 @mixin arrow-variant($direction:left,$arrow-size:10px,$arrow-color:#ccc,$arrow-length:false){
@@ -1531,8 +1669,33 @@ $codykit-relative-empx:16px !global;
 			$query:($addition-queries + " and " + $query);
 		}
 
-
 		@media #{$query} {
+			@content;
+		}
+	}
+}
+@mixin media-not-over-width($over:false, $addition-queries:false) {
+	@if $over {
+		$query:"(min-width: #{$over})";
+
+		@if $addition-queries {
+			$query:($addition-queries + " and " + $query);
+		}
+
+		@media not all and #{$query} {
+			@content;
+		}
+	}
+}
+@mixin media-not-less-width($less:false, $addition-queries:false) {
+	@if $less {
+		$query:"(max-width: #{$less - 1})";
+
+		@if $addition-queries {
+			$query:($addition-queries + " and " + $query);
+		}
+
+		@media not all and #{$query} {
 			@content;
 		}
 	}
@@ -1546,6 +1709,19 @@ $codykit-relative-empx:16px !global;
 		}
 
 		@media #{$query} {
+			@content;
+		}
+	}
+}
+@mixin media-outer-width($less:false, $over:false, $addition-queries:false) {
+	@if $less and $over {
+		$query:"(min-width: #{$less - 1}) and (max-width: #{$over})";
+
+		@if $addition-queries {
+			$query:($addition-queries + " and " + $query);
+		}
+
+		@media not all and #{$query} {
 			@content;
 		}
 	}
@@ -1676,14 +1852,14 @@ $codykit-relative-empx:16px !global;
 		@include media-less-width($codykit-desktop-width){ @content; };
 	}
 }
-@mixin media-desktop-landscape($ratio:false) {
+@mixin media-desktop-wide($ratio:false) {
 	@if $ratio {
 		@include media-over-width($codykit-desktop-landscape-width,"(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)"){ @content; };
 	} @else {
 		@include media-over-width($codykit-desktop-landscape-width){ @content; };
 	}
 }
-@mixin media-desktop-landscape-lt($ratio:false) {
+@mixin media-desktop-wide-lt($ratio:false) {
 	@if $ratio {
 		@include media-less-width($codykit-desktop-landscape-width,"(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)"){ @content; };
 	} @else {
@@ -1743,7 +1919,14 @@ $codykit-relative-empx:16px !global;
 	padding-right:$response-outer-margin;
 	$response-horizental-padding:$response-horizental-padding !global;
 	$response-vertical-padding:$response-vertical-padding !global;
-	margin-top:-$response-vertical-padding;
+	//margin-top:-$response-vertical-padding;
+
+	@if $response-vertical-padding != 0px {
+		margin-bottom:-$response-vertical-padding !important;
+	} @else {
+		margin-bottom:$response-vertical-padding;
+	}
+
 	@content;
 }
 @mixin response-column($width:auto,$height:false){
@@ -1761,8 +1944,19 @@ $codykit-relative-empx:16px !global;
 	margin-right:0;
 	padding-left: ($response-horizental-padding / 2);
 	padding-right: ($response-horizental-padding / 2);
-	margin-top:$response-vertical-padding;
+
+	@if $response-vertical-padding != 0px {
+		margin-bottom:$response-vertical-padding !important;
+	} @else {
+		margin-bottom:$response-vertical-padding;
+	}
+
 	@content;
+}
+@mixin response-content{
+	margin:0 auto;
+	width:100%;
+	height:100%;
 }
 @mixin columns-section($gap:10px,$count:1){
 	-webkit-column-gap: $gap;
@@ -1831,8 +2025,8 @@ $codykit-relative-empx:16px !global;
 		//test
 		//vertical-align:$vertical-align;
 		//vertical-align:inherit;
-		&:after, &:before { 
-			content:none; 
+		&:after, &:before {
+			content:none;
 		};
     }
 
@@ -1850,11 +2044,13 @@ $codykit-relative-empx:16px !global;
 }
 
 @mixin codykit-document-basic($min-width:false) {
+	/* codykit-document-basic -- start */
     html,body {
+		position:relative;
         margin:0px;
         padding:0px;
 		@if $min-width == false {
-			min-width:360px;
+			min-width:320px;
 		} @else {
 			min-width:$min-width;
 		}
@@ -1867,7 +2063,7 @@ $codykit-relative-empx:16px !global;
         display:block;
 		margin:0;
     }
-	header, footer, aside {
+	section, article, header, footer, aside {
 		position:relative;
 	}
 	//chrome user agent styleseet fix
@@ -1879,7 +2075,6 @@ $codykit-relative-empx:16px !global;
 		padding:initial;
 		border:none;
 		background-color:white;
-
 	}
 
     audio,canvas,progress,video {
@@ -1944,8 +2139,70 @@ $codykit-relative-empx:16px !global;
 			font-weight:normal;
 			padding:0;
 			vertical-align:middle;
+			word-break:break-all;
 		}
 	}
+	[media-only~="mobile"]{
+		@include media-mobile-gt {
+			display:none !important;
+		}
+
+	}
+	[media-only~="tablet"]{
+		@include media-outer-width($codykit-tablet-width,$codykit-desktop-width){
+			display:none !important;
+		}
+	}
+	[media-only~="desktop"]{
+		@include media-desktop-lt {
+			display:none !important;
+		}
+	}
+	[media-not~="mobile"]{
+		@include media-mobile {
+			display:none !important;
+		}
+	}
+	[media-not~="tablet"]{
+		@include media-tablet {
+			display:none !important;
+		}
+	}
+	[media-not~="desktop"]{
+		@include media-desktop {
+			display:none !important;
+		}
+	}
+	/* codykit-document-basic -- end */
+}
+@mixin modal-variant($background-color:rgba(0,0,0,0.65)) {
+    -ms-overflow-style: none;
+    position: fixed;
+    top: 0;
+    right: -18px;
+    bottom: 0;
+    left: -18px;
+    z-index: 10000;
+    display: none;
+    overflow: hidden;
+    outline: 0;
+	background-color:$background-color;
+	-webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+        width: 0 !important;
+    }
+    &.open-modal, &[open] {
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: block;
+    }
+}
+@mixin dialog-variant($width:50%,$height:auto,$top:50px) {
+    position: relative;
+    margin: $top auto;
+    width: $width;
+	height:$height;
+	background-color:white;
 }
 @mixin codykit-block-variant {
     display:block;
@@ -1955,16 +2212,92 @@ $codykit-relative-empx:16px !global;
 }
 @mixin codykit-inlineblock-variant {
 	@include inline-block;
+	@include word-wrap-variant(false,visible);
 	position:relative;
 	margin:0;
 }
+@mixin codykit-hidden-block-variant {
+    display:none;
+	&.active, &[active], &[ng-switch-when], &[ng-switch-default], &[ng-if], &[ng-show], &[ng-hide], &[todo] {
+		display:block;
+	}
+}
+@mixin codykit-media-trace {
+	body {
+		&:after {
+			content:"media trace";
+			position:fixed;
+			display:block;
+			right:0;
+			bottom:0;
+			background-color:black;
+			color:black;
+			padding:3px 5px;
+			z-index:10000;
+			@include media-mobile {
+				content:("media-mobile (portrait) [ lt" + $codykit-mobile-landscape-width + "]");
+				background-color:#ffeda0;
+			}
+			@include media-mobile-landscape {
+				content:("media-mobile (landscape) [" $codykit-mobile-landscape-width + " ~ " + $codykit-tablet-width + "]");
+				background-color:#feb24c;
+			}
+			@include media-tablet {
+				content:("media-tablet (portrait) [" + $codykit-tablet-width + " ~ " + $codykit-tablet-landscape-width + "]");
+				background-color:#addd8e;
+
+			}
+			@include media-tablet-landscape {
+				content:("media-tablet (landscape) [" + $codykit-tablet-landscape-width + "~" + $codykit-desktop-width + "]");
+				background-color:#31a354;
+			}
+			@include media-desktop {
+				content:("media-desktop (normal) [ gt " + $codykit-desktop-width + "]");
+				background-color:#7fcdbb;
+			}
+			@include media-desktop-wide {
+				content:("media-desktop (wide) [ gt " + $codykit-desktop-landscape-width + "]");
+				background-color:#bcbddc;
+			}
+		}
+	}
+}
 @mixin codykit-extend-tag($custom-block-elements:false,$custom-inlineblock-elements:false,$codykit-setup:false){
 	@if $codykit-setup {
-		//bundle : 같은 목적을 지닌 section의 집합
-		content,stage,leaf,bundle,inventory,deck,item,context,group,controls,part,band,sign,tab,switch,case,modal,screen {
+		//content : header,footer외의 컨텐츠 요소의 부족한 정의 보충
+		//frieze : 섹션이나 컨텐츠의 동질적이거나 연속적인 구간을 나누기 위한 장식 또는 구간
+		//bar   : 섹션의 유틸리티 그룹
+		//inventory : deck이나 item의 집합
+		//sign   : 내용이 없는 시각적인 컨텐츠
+		//context : 필요에 의해 위치가 변경되는 그룹
+		//controls : input과 같은 폼컨트롤러 집합
+		//part : 조립 가능한 부분적이고 반복적인 '스타일요소'
+		//band : 여러 태그 단위를 하나로 묶는 역할
+		//cover : 단지 스타일을 위한 껍데기를 나타내는 태그
+		//item  : 하나의 모델에 대한 아이템
+		//detail  : 평소에 보이지 않다가 특정상황에 사용자에게 제공되는 부가적인 내용
+		//message : 평소에 보이지 않다가 특정상황에 사용자에게 강조하는 부가적인 내용
+
+		content,cover,frieze,bar,group,context,controls,inventory,flow,item,part,message,band,sign,switch,case,modal,detail,screen,noscreen,nocontent {
 			@include codykit-block-variant;
 		}
-		
+
+		detail {
+			display:none;
+		}
+
+		message {
+			@include codykit-hidden-block-variant;
+		}
+
+		detail {
+			@include codykit-hidden-block-variant;
+		}
+
+		[open] > detail {
+			display:block;
+		}
+
 		tab {
 			@include list-variant;
 			@include clearfix;
@@ -1972,63 +2305,70 @@ $codykit-relative-empx:16px !global;
 				cursor:pointer;
 			}
 		}
-		
+
 		switch {
 			> case {
-		        display:none;
-				&.active, &[ng-switch-when], &[ng-switch-default], &[ng-if], &[ng-show] {
-					display:block;
-				}
+				@include codykit-hidden-block-variant;
 			}
 		}
-		
+
 		modal {
-		    -ms-overflow-style: none;
-		    position: fixed;
-		    top: 0;
-		    right: -18px;
-		    bottom: 0;
-		    left: -18px;
-		    z-index: 10000;
-		    display: none;
-		    overflow: hidden;
-		    outline: 0;
-			background-color:rgba(0,0,0,0.65);
-			-webkit-overflow-scrolling: touch;
-		    &::-webkit-scrollbar {
-		        width: 0 !important;
-		    }
-		    &.open-modal {
-		        overflow-x: hidden;
-		        overflow-y: auto;
-		        display: block;
-		    }
+			@include modal-variant;
+
 		}
-		
+
 		screen {
-			@include scrollbar-variant;
-			max-width:100%;
-			max-height:100%;
-			overflow:auto;
-			width:100%;
-			height:100%;
+			@include screen-variant;
 		}
-		
-		edge,format,badge,unit{
+
+		noscreen {
+			padding-right:17px;
+			+ screen {
+				overflow-y:scroll;
+			}
+			html.msie &{
+				padding-right:17px;
+			}
+		}
+
+		nocontent {
+			display:none;
+			text-align:center;
+			overflow:hidden;
+			width:0%;
+			height:0%;
+			tbody:empty + &, content:empty + &, &[ng-switch-when], &[ng-switch-default], &[ng-if], &[ng-show], &[ng-hide], &.active, &[todo] {
+				display:block;
+				width:100%;
+				height:auto;
+			}
+		}
+
+		// format : inline-text-group
+		badge,unit,om{
 			@include codykit-inlineblock-variant;
 		}
 		
+		format {
+			> * {
+				@include inline-block;
+			}
+		}
 		badge {
 			text-align:center;
 		}
+		//omission text
+		om {
+			@include omission-variant(100%);
+		}
 	}
-	
+
 	@if $custom-block-elements {
 		#{$custom-block-elements} {
 	        @include codykit-block-variant;
 	    }
 	}
-	
+
 	@if $custom-inlineblock-elements {
 		#{$custom-inlineblock-elements} {
 			@include codykit-inlineblock-variant;
@@ -2055,30 +2395,25 @@ $codykit-relative-empx:16px !global;
 }
 @mixin codykit-document-fullscreen($main-wrapper:false) {
 	html,body {
+		@include scroll-variant(false,false);
         width:100%;
         height:100%;
-	}
-    html {
-		@include scroll-variant(false,false);
 		max-width:100%;
 		max-height:100%;
-    }
+	}
 	body {
-		@include scroll-variant(false,false);
-		max-width:100%;
-		max-height:100%;
+	    @if $main-wrapper {
+	        #{$main-wrapper} {
+				width:100%;
+				height:100%;
+				position:absolute;
+				top:0;
+				left:0;
+	            overflow-x:hidden;
+	            overflow-y:auto;
+	        }
+	    }
 	}
-    @if $main-wrapper {
-        #{$main-wrapper} {
-			position:absolute;
-			top:0;
-			left:0;
-			right:0;
-			bottom:0;
-            overflow-x:hidden;
-            overflow-y:auto;
-        }
-    }
 }
 
 @function preload-url($url){
