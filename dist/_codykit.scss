@@ -1,5 +1,5 @@
 @charset "UTF-8";
-//CSS Toolkit :: Codykit version : 0.15.0
+//CSS Toolkit :: Codykit version : 0.15.1
 //auther : hojung ahn (https://github.com/labeldock/codykit)
 @if global-variable-exists(codykit-hack){ $codykit-hack:$codykit-hack !global; } @else {
 	$codykit-hack:false !global;
@@ -1322,7 +1322,6 @@
 	background-image:$url;
 	background-repeat:no-repeat;
     background-position:center center;
-	background-color:transparent;
     text-indent:-99999px;
 	@content;
 }
