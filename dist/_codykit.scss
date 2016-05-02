@@ -350,24 +350,24 @@
 @mixin user-select-variant($flag:auto) {
 	@if $flag == false or $flag == none {
 		-webkit-touch-callout: none;
-		@include css3f(user-select, none);
+		@include vender-prefix(user-select, none);
 	} @else {
 		@if $flag == true {
 			$flag:auto;
 		}
 		-webkit-touch-callout: auto;
-		@include css3f(user-select, auto);
+		@include vender-prefix(user-select, auto);
 	}
 }
 @mixin appearance-variant($flag:true){
 	@if $flag == true {
-	    @include css3f(appearance,normal);
+	    @include vender-prefix(appearance,normal);
 	    &::-ms-expand { display:normal; }
 	} @elseif $flag == false {
-	    @include css3f(appearance,none);
+	    @include vender-prefix(appearance,none);
 	    &::-ms-expand { display:none; }
 	} @else {
-	    @include css3f(appearance,$flag);
+	    @include vender-prefix(appearance,$flag);
 	    &::-ms-expand { display:$flag; }
 	}
 	@content;
@@ -401,7 +401,7 @@
     #{$name} : unquote('-ms-#{$value}');
     #{$name} : $value;
 }
-@mixin css3f($name,$value){
+@mixin vender-prefix($name,$value){
     -webkit-#{$name} : $value;
     -moz-#{$name}    : $value;
     -ms-#{$name}     : $value;
@@ -415,7 +415,7 @@
 	}
 }
 @mixin transform($value){
-    @include css3f(transform, $value);
+    @include vender-prefix(transform, $value);
 }
 @mixin transition($props:"all 0.3s",$timing-function:cubic-bezier(.4,.99,.4,.99)){
 	@if $props {
@@ -537,19 +537,19 @@
   filter: alpha(opacity=#{$opacity * 100});
 }
 @mixin matrix($a:1, $c:0, $b:0, $d:1, $tx:0, $ty:0){
-    @include css3f(transform, matrix($a,$c,$b,$d,$tx,$ty));
+    @include vender-prefix(transform, matrix($a,$c,$b,$d,$tx,$ty));
 }
 @mixin translateX($x){
-    @include css3f(transform, translateX(#{$x}));
+    @include vender-prefix(transform, translateX(#{$x}));
 }
 @mixin translateY($y){
-    @include css3f(transform, translateY(#{$y}));
+    @include vender-prefix(transform, translateY(#{$y}));
 }
 @mixin translate($x:false,$y:false){
     @if ($x == false and $y == false) {
-        @include css3f(transform, translate(0px,0px));
+        @include vender-prefix(transform, translate(0px,0px));
     } @else if ($x != false and $y != false){
-        @include css3f(transform, translate(#{$x},#{$y}));
+        @include vender-prefix(transform, translate(#{$x},#{$y}));
     } @else if($x == false) {
         @include translateY($y);
     } @else {
@@ -560,37 +560,37 @@
 @mixin flip-variant($direction,$flip:true) {
 	@if $direction == top or $direction == bottom or $direction == height or $direction == vertical {
 	    @if $flip == true {
-	        @include css3f(transform, scaleX(-1));
+	        @include vender-prefix(transform, scaleX(-1));
 	        filter: FlipH;
 	        -ms-filter: "FlipH";
 	    } @else {
-	        @include css3f(transform, scaleX(1));
+	        @include vender-prefix(transform, scaleX(1));
 	        filter: none;
 	        -ms-filter: none;
 	    }
 	}
 	@if $direction == left or $direction == right or $direction == width or $direction == horizontal {
 	    @if $flip == true {
-	        @include css3f(transform, scaleY(-1));
+	        @include vender-prefix(transform, scaleY(-1));
 	        filter: FlipV;
 	        -ms-filter: "FlipV";
 	    } @else {
-	        @include css3f(transform, scaleY(1));
+	        @include vender-prefix(transform, scaleY(1));
 	        filter: none;
 	        -ms-filter: none;
 	    }
 	}
 }
 @mixin translate3d($x:0,$y:0,$z:0){
-    @include css3f(transform, translate3d(#{$x},#{$y},#{$z}));
+    @include vender-prefix(transform, translate3d(#{$x},#{$y},#{$z}));
 }
 @mixin rotate($rotate:0) {
-    @include css3f(transform, rotate(#{$rotate}));
+    @include vender-prefix(transform, rotate(#{$rotate}));
     //filter: progid:DXImageTransform.Microsoft.BasicImage(rotation = 3);
 }
 @mixin scale($p1:1,$p2:false){
     @if $p2 == false {$p2:$p1}
-    @include css3f(transform, scale($p1,$p2));
+    @include vender-prefix(transform, scale($p1,$p2));
 }
 @mixin translate-center($offset-x:false,$offset-y:false,$position:absolute) {
     position: $position;
@@ -802,25 +802,25 @@
 }
 @mixin shadow-blur-variant($blur:0px,$color:silver,$spread:false){
 	@if $spread {
-		@include css3f(box-shadow, 0px 0px #{$blur} #{$spread} #{$color});
+		@include vender-prefix(box-shadow, 0px 0px #{$blur} #{$spread} #{$color});
 	} @else {
-		@include css3f(box-shadow, 0px 0px #{$blur} #{$color});
+		@include vender-prefix(box-shadow, 0px 0px #{$blur} #{$color});
 	}
 }
 @mixin shadow-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:silver,$spread:false){
 	@if $blur == false { $blur : (($x-shadow + $y-shadow) / 2); }
 	@if $spread {
-		@include css3f(box-shadow, #{$x-shadow} #{$y-shadow} #{$blur} #{$spread} #{$color});
+		@include vender-prefix(box-shadow, #{$x-shadow} #{$y-shadow} #{$blur} #{$spread} #{$color});
 	} @else {
-		@include css3f(box-shadow, #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
+		@include vender-prefix(box-shadow, #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
 	}
 }
 @mixin shadow-inset-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:gray,$spread:false){
     @if $blur == false { $blur : (($x-shadow + $y-shadow) / 2); }
     @if $spread {
-        @include css3f(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$spread} #{$color});
+        @include vender-prefix(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$spread} #{$color});
     } @else {
-        @include css3f(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
+        @include vender-prefix(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
     }
 }
 @mixin shadow-border($border-width:1px,$color:#000,$direction:false,$blur:0px){
