@@ -1,5 +1,5 @@
 @charset "UTF-8";
-//CSS Toolkit :: Codykit version : 0.15.1
+//CSS Toolkit :: Codykit version : 0.17 (1.0 alpha)
 //auther : hojung ahn (https://github.com/labeldock/codykit)
 @if global-variable-exists(codykit-hack){ $codykit-hack:$codykit-hack !global; } @else {
 	$codykit-hack:false !global;
@@ -83,12 +83,14 @@
 		$codykit-standard-empx:$base-size !global;
 	}
 }
+
 @mixin root-fontsize-variant($relative-size:false) {
 	@if $relative-size != false {
 		$codykit-relative-empx:$relative-size !global;
 	}
 	font-size:$codykit-relative-empx * ($codykit-relative-empx / $codykit-standard-empx);
 }
+
 @mixin rem-variant($font-size:false) {
 	@if $font-size == false {
 		font-size:1rem;
@@ -96,19 +98,13 @@
 		font-size:#{$font-size / $codykit-relative-empx}rem;
 	}
 }
-//"width-height" is only use in this file
+
+//"width-height" is only use in _codykit.scss
 @mixin width-height($width:false,$height:false) {
     @if $width != false  { width:$width; }
     @if $height != false { height:$height; }
 }
-@mixin thin-variant($direction:horizontal,$main:100%,$sub:1px){
-	@if $direction == left or $direction == horizontal {
-		@include width-height($main,$sub);
-	}
-	@if $direction == top or $direction == vertical {
-		@include width-height($sub,$main);
-	}
-}
+
 @mixin align-block($align:left, $width:false, $height:false){
     display:block;
     @if $align == left {
@@ -125,6 +121,7 @@
     }
     @include width-height($width,$height);
 }
+
 @mixin block($width:false, $height:false, $align-block:false, $line-height:false){
     @include align-block($align-block, $width, $height);
 
@@ -134,12 +131,15 @@
 
 	@content;
 }
+
 @mixin inline-block($width:false, $height:false,$vertical-align:false,$line-height:false){
     @if $codykit-hack == true {
         display:inline;
 		zoom:1;
     }
+    
     display:inline-block;
+    
 	@include width-height($width,$height);
 
 	@if $vertical-align == false {
@@ -153,17 +153,7 @@
 	}
 	@content;
 }
-//stage는 relative block 입니다.
-@mixin stage-variant($width:false,$height:false,$align-block:false,$line-height:false){
-	@include block($width,$height,$align-block,$line-height);
-	position:relative;
-	@content;
-}
-@mixin inline-stage-variant($width:false,$height:false,$vertical-align:false,$line-height:false){
-	@include inline-block($width,$height,$vertical-align,$line-height);
-	position:relative;
-	@content;
-}
+
 @mixin flex-flow-variant($direction:row, $wrap:wrap){
 	@if $direction == row or $direction == top {
 		flex-direction:row;
@@ -187,86 +177,7 @@
 	}
 	@content;
 }
-@mixin flex($width:false, $height:false, $direction:row, $wrap:wrap){
-	display: -webkit-flex;
-	display: flex;
-	@include width-height($width,$height);
-	@include flex-flow-variant($direction,$wrap);
-	@content;
-}
-@mixin inline-flex($width:false, $height:false, $direction:row, $wrap:wrap){
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	vertical-align:middle;
 
-	@include width-height($width,$height);
-	@include flex-flow-variant($direction,$wrap);
-	@content;
-}
-@mixin flex-align($horizontal-align:center,$vertical-align:center){
-	-webkit-align-items: $horizontal-align;
-	align-items: $horizontal-align;
-	-webkit-justify-content: $vertical-align;
-	justify-content: $vertical-align;
-}
-@mixin flex-item($width:false,$height:false) {
-	@if $width {
-		//flex-grow:2;
-		width:$width;
-	} @else {
-		//equal size in container
-		flex-grow:1;
-		flex-basis:0;
-	}
-	@if $height {
-		height:$height;
-	}
-	flex-shrink:1;
-	@content;
-}
-@mixin flex-item-count($count:1){
-	@include flex-item((100% / $count),false);
-	@content;
-}
-
-@mixin flex-response-section($margin:10px) {
-	@include flex(false,false,row);
-	$flex-response-margin:$margin !global;
-	margin-left:-($flex-response-margin / 2);
-	margin-right:-($flex-response-margin / 2);
-	@content;
-}
-@mixin inline-flex-response-section($margin:10px) {
-	@include inline-flex(false,false,row);
-	$flex-response-margin:$margin !global;
-	margin-left:-($flex-response-margin / 2);
-	margin-right:-($flex-response-margin / 2);
-	@content;
-}
-@mixin flex-response-item($width:false,$height:false){
-	@include flex-item($width,$height);
-	margin-left:($flex-response-margin / 2);
-	margin-right:($flex-response-margin / 2);
-}
-@mixin flex-response-item-count($count:1) {
-	@include flex-item-count($count);
-	margin-left:($flex-response-margin / 2);
-	margin-right:($flex-response-margin / 2);
-	@content;
-}
-//nok
-@mixin sticky($main-pos:0px, $position:top){
-    @include css3v(position,sticky);
-    @if $position == top {
-        top:$main-pos;
-    } @else if $position == left {
-
-    } @else if $position == right {
-
-    } @else if $position == bottom {
-
-    }
-}
 @mixin clearfix {
     &:after {
         content:"";
@@ -276,9 +187,7 @@
         clear:both;
     }
 }
-@mixin inlinefix($line-height:100%){
-	line-height:$line-height;
-}
+
 @mixin white-space-variant($flag:true,$scroll:false){
 	@if $flag == true{
 		white-space: normal;
@@ -291,6 +200,7 @@
 		max-width:auto;
 	}
 }
+
 @mixin word-break-variant($flag:true,$text-overflow:clip) {
     @if $flag == true{
 	    white-space: normal;
@@ -307,6 +217,7 @@
 	    -ms-text-overflow: $text-overflow;
     }
 }
+
 @mixin word-wrap-variant($flag:true,$overflow:false,$text-overflow:clip) {
 	@if $flag == true{
 	    white-space: normal;
@@ -335,6 +246,7 @@
 	    -ms-text-overflow: $text-overflow;
 	}
 }
+
 @mixin ellipsis-variant($flag:true,$overflow:false){
 	@if $flag == true {
 		@include word-wrap-variant(false,$overflow,ellipsis);
@@ -343,10 +255,12 @@
 		@include word-wrap-variant(true);
 	}
 }
+
 @mixin omission-variant($max-width:100%){
 	max-width:$max-width;
 	@include ellipsis-variant(true);
 }
+
 @mixin user-select-variant($flag:auto) {
 	@if $flag == false or $flag == none {
 		-webkit-touch-callout: none;
@@ -359,6 +273,7 @@
 		@include css3f(user-select, auto);
 	}
 }
+
 @mixin appearance-variant($flag:true){
 	@if $flag == true {
 	    @include css3f(appearance,normal);
@@ -372,8 +287,8 @@
 	}
 	@content;
 }
-@mixin pointer-events-variant($flag:true,$cursor:false){
 
+@mixin pointer-events-variant($flag:true,$cursor:false){
     @if $flag == false or $flag == none {
         pointer-events: none;
 		@if $cursor == true {
@@ -391,22 +306,24 @@
 		@include user-select-variant(true);
     }
 }
+
 @mixin css3v($name,$value,$fallback:false){
     @if $fallback {
 		#{$name}:#{$fallback};
 	}
-
     #{$name} : unquote('-webkit-#{$value}');
     #{$name} : unquote('-moz-#{$value}');
     #{$name} : unquote('-ms-#{$value}');
     #{$name} : $value;
 }
+
 @mixin css3f($name,$value){
     -webkit-#{$name} : $value;
     -moz-#{$name}    : $value;
     -ms-#{$name}     : $value;
     #{$name}         : $value;
 }
+
 @mixin calc($prop,$initial-value:100%,$value:0px,$fallback:false){
 	@if $value < 0px {
 		@include css3v($prop,calc(#{$initial-value} - #{$value * -1}),$fallback);
@@ -414,9 +331,11 @@
 		@include css3v($prop,calc(#{$initial-value} + #{$value}),$fallback);
 	}
 }
+
 @mixin transform($value){
     @include css3f(transform, $value);
 }
+
 @mixin transition($props:"all 0.3s",$timing-function:cubic-bezier(.4,.99,.4,.99)){
 	@if $props {
 		-webkit-transition:#{$props};
@@ -425,11 +344,13 @@
 		transition-timing-function:$timing-function;
 	}
 }
+
 @mixin delay-transition($delay:0.3s,$props:"all 0.3s",$timing-function:ease-in-out){
 	@include transition($props,$timing-function);
 	transition-delay:$delay;
 	-webkit-transition-delay:$delay;
 }
+
 @mixin keyframes($name,$with-webkit:true) {
 	@keyframes #{$name} {
 		@content;
@@ -438,6 +359,7 @@
 		@content;
 	}
 }
+
 @mixin animation($name,$sec:0.3s,$timing-function:false,$repeat:1){
 	@if $timing-function == false {
 		$timing-function:ease-in-out;
@@ -451,11 +373,13 @@
 	-webkit-animation-timing-function: $timing-function;
 	-webkit-animation-iteration-count: $repeat;
 }
+
 @mixin animation-to($name,$sec:0.3s,$timing-function:ease-in-out,$repeat:1) {
 	@include animation($name,$sec,$timing-function,$repeat);
 	animation-fill-mode:forwards;
 	-webkit-animation-fill-mode:forwards;
 }
+
 @mixin delay-animation($delay:0.3s,$name:false,$sec:0.3s,$timing-function:ease-in-out,$repeat:1){
 	@if $name {
 		@include animation($name,$sec,$timing-function,$repeat);
@@ -463,27 +387,31 @@
 		-webkit-animation-delay: $delay;
 	}
 }
+
 @mixin repeat-animation($name:false,$sec:2s,$timing-function:linear){
 	@if $name {
 		@include animation($name,$sec,$timing-function,infinite);
 	}
 }
+
 @mixin animation-reverse($name,$sec:0.3s,$timing-function:false,$repeat:1){
 	@include animation($name,$sec,$timing-function,$repeat);
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
-
 }
+
 @mixin animation-reverse-to($name,$sec:0.3s,$timing-function:ease-in-out,$repeat:1) {
 	@include animation-to($name,$sec,$timing-function,$repeat);
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
 }
+
 @mixin delay-animation-reverse($delay:0.3s,$name:false,$sec:0.3s,$timing-function:ease-in-out,$repeat:1){
 	@include delay-animation($delay,$name,$sec,$timing-function,$repeat);
 	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
 }
+
 @mixin disabled-variant($switch:true,$with-shadow:true) {
 	@if $switch == true {
 	    cursor: not-allowed;
@@ -494,57 +422,25 @@
 		}
 	}
 }
-@mixin display-switch($switch:".active",$display:block) {
-	display:none;
-	&#{$switch} {
-		display:$display;
-		@content;
-	}
-}
-@mixin visibility-switch($switch:".active") {
-    visibility:hidden;
-    &#{$switch} {
-        visibility:visible;
-		@content;
-    }
-}
-@mixin switch($status){
-	&#{$status} {
-		@content;
-	}
-}
-@mixin switch-muted($status,$opacity:.4){
-	@include switch($status){
-		@if $opacity != 1 { opacity:$opacity; }
-		@content;
-	}
-}
-@mixin switch-disabled($opacity:1) {
-	@include switch-muted(".disabled,&[disabled]",$opacity){
-		@include disabled-variant(true);
-		@content;
-	}
-}
-@mixin switch-readOnly($opacity:1) {
-	@include switch-muted(".readOnly,&[readOnly]",$opacity){
-		@include disabled-variant(true);
-		@content;
-	}
-}
+
 @mixin opacity($opacity:1){
   opacity: $opacity;
   // IE8 filter
   filter: alpha(opacity=#{$opacity * 100});
 }
+
 @mixin matrix($a:1, $c:0, $b:0, $d:1, $tx:0, $ty:0){
     @include css3f(transform, matrix($a,$c,$b,$d,$tx,$ty));
 }
+
 @mixin translateX($x){
     @include css3f(transform, translateX(#{$x}));
 }
+
 @mixin translateY($y){
     @include css3f(transform, translateY(#{$y}));
 }
+
 @mixin translate($x:false,$y:false){
     @if ($x == false and $y == false) {
         @include css3f(transform, translate(0px,0px));
@@ -556,42 +452,20 @@
         @include translateX($x);
     }
 }
-//TODO:not test
-@mixin flip-variant($direction,$flip:true) {
-	@if $direction == top or $direction == bottom or $direction == height or $direction == vertical {
-	    @if $flip == true {
-	        @include css3f(transform, scaleX(-1));
-	        filter: FlipH;
-	        -ms-filter: "FlipH";
-	    } @else {
-	        @include css3f(transform, scaleX(1));
-	        filter: none;
-	        -ms-filter: none;
-	    }
-	}
-	@if $direction == left or $direction == right or $direction == width or $direction == horizontal {
-	    @if $flip == true {
-	        @include css3f(transform, scaleY(-1));
-	        filter: FlipV;
-	        -ms-filter: "FlipV";
-	    } @else {
-	        @include css3f(transform, scaleY(1));
-	        filter: none;
-	        -ms-filter: none;
-	    }
-	}
-}
+
 @mixin translate3d($x:0,$y:0,$z:0){
     @include css3f(transform, translate3d(#{$x},#{$y},#{$z}));
 }
-@mixin rotate($rotate:0) {
+
+@mixin rotate-varinat($rotate:0) {
     @include css3f(transform, rotate(#{$rotate}));
-    //filter: progid:DXImageTransform.Microsoft.BasicImage(rotation = 3);
 }
-@mixin scale($p1:1,$p2:false){
+
+@mixin scale-variant($p1:1,$p2:false){
     @if $p2 == false {$p2:$p1}
     @include css3f(transform, scale($p1,$p2));
 }
+
 @mixin translate-center($offset-x:false,$offset-y:false,$position:absolute) {
     position: $position;
 
@@ -608,6 +482,7 @@
     @include translate(-50%,-50%);
 	@content;
 }
+
 @mixin translate-center-horizontal($offset-x:false,$position:absolute) {
     position: $position;
     @if $offset-x {
@@ -618,6 +493,7 @@
     @include translateX(-50%);
 	@content;
 }
+
 @mixin translate-center-vertical($offset-y:false,$position:absolute) {
     position: $position;
     @if $offset-y {
@@ -628,6 +504,7 @@
     @include translateY(-50%);
 	@content;
 }
+
 @mixin relative($x:false,$y:false){
 	@if $x == auto or $x == initial{
 		left:$x;
@@ -641,18 +518,12 @@
 	}
 	@content;
 }
-@mixin relativeX($x){
-    @include relative($x);
-	@content;
-}
-@mixin relativeY($y){
-    @include relative(false,$y);
-	@content;
-}
+
 @mixin relative-center($offset-x:false) {
     @include translate-center-horizontal($offset-x,relative);
 	@content;
 }
+
 @mixin absolute($x:false,$y:false,$r:false,$b:false){
 	position:absolute;
 
@@ -760,14 +631,7 @@
 	}
 	@content;
 }
-@mixin absoluteX($x){
-    @include absolute($x);
-	@content;
-}
-@mixin absoluteY($y){
-    @include absolute(false,$y);
-	@content;
-}
+
 @mixin visibility($flag:true){
 	@if $flag == true {
 		visibility:visible;
@@ -776,37 +640,7 @@
 		visibility:hidden;
 	}
 }
-@mixin visibility-switch($default-visible:false,$switch-selector:".active") {
-	@if $default-visible == true  { @include visibility(true); }
-	@if $default-visible == false { @include visibility(false); }
-	&#{$switch-selector}{
-		@if $default-visible == true  { @include visibility(false); }
-		@if $default-visible == false { @include visibility(true); }
-	}
-}
-@mixin display-block-switch($default-visible:false,$switch-selector:".active") {
-	@if $default-visible == true  { display:block; }
-	@if $default-visible == false { display:none; }
-	&#{$switch-selector}{
-		@if $default-visible == true  { display:none; }
-		@if $default-visible == false { display:block; }
-	}
-}
-@mixin display-inline-block-switch($default-visible:false,$switch-selector:".active") {
-	@if $default-visible == true  { @include inline-block; }
-	@if $default-visible == false { display:none; }
-	&#{$switch-selector}{
-		@if $default-visible == true  { display:none; }
-		@if $default-visible == false { @include inline-block; }
-	}
-}
-@mixin shadow-blur-variant($blur:0px,$color:silver,$spread:false){
-	@if $spread {
-		@include css3f(box-shadow, 0px 0px #{$blur} #{$spread} #{$color});
-	} @else {
-		@include css3f(box-shadow, 0px 0px #{$blur} #{$color});
-	}
-}
+
 @mixin shadow-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:silver,$spread:false){
 	@if $blur == false { $blur : (($x-shadow + $y-shadow) / 2); }
 	@if $spread {
@@ -815,6 +649,7 @@
 		@include css3f(box-shadow, #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
 	}
 }
+
 @mixin shadow-inset-variant($x-shadow:0px,$y-shadow:0px,$blur:false,$color:gray,$spread:false){
     @if $blur == false { $blur : (($x-shadow + $y-shadow) / 2); }
     @if $spread {
@@ -823,6 +658,7 @@
         @include css3f(box-shadow, inset #{$x-shadow} #{$y-shadow} #{$blur} #{$color});
     }
 }
+
 @mixin shadow-border($border-width:1px,$color:#000,$direction:false,$blur:0px){
     @if $direction == left {
 		@if $border-width < 0px {
@@ -868,6 +704,7 @@
 
     }
 }
+
 @mixin hr-variant($color:gray,$width:1px){
 	display:block;
 	height:$width;
@@ -877,6 +714,7 @@
 	background-color:$color;
 	@content;
 }
+
 @mixin break-variant($height:10px,$margin:5px,$color:gray,$line-width:1px){
     @include inline-block;
     vertical-align:middle;
@@ -887,46 +725,14 @@
     margin-right:$margin;
     background-color:$color;
 }
-@mixin background-position-variant($x:false,$y:false,$repeat:no-repeat){
-	@if $x and $y {
-		background-position:#{$x} #{$y};
-	} @else {
-		@if $x != false and $y != false {
-			@if $x {
-				background-position:#{$x} top;
-			}
-			@if $y {
-				background-position:left #{$y};
-			}
-		}
-	}
-	background-repeat:$repeat;
-	@content;
-}
-@mixin imageset-variant($size,$x:false,$y:false,$repeat:false) {
-	@if $size == false or $size == 'false false' {
-		background-size:auto;
-	} @else {
-		background-size:$size;
-	}
-	@include background-position-variant($x,$y,($repeat or no-repeat));
-}
-@mixin background-image-variant($url,$x:false,$y:false,$repeat:no-repeat){
-	background-image:$url;
-	@include background-position-variant($x,$y,$repeat);
-	@content;
-}
-@mixin background-imageset-variant($url,$size,$x:center,$y:center,$repeat:no-repeat){
-	background-image:$url;
-	@include imageset-variant($size,$x,$y,$repeat);
-	@content;
-}
+
 @mixin clip-path-variant($clip-path){
 	//shape-padding:0px;
 	//shape-inside:$clip-path;
 	-webkit-clip-path:$clip-path;
 	clip-path:$clip-path;
 }
+
 @mixin inner-image-variant($url:false,$icon-align:left,$icon-offset:false,$icon-offset2:false) {
 	background-image:$url;
 	background-repeat:no-repeat;
@@ -998,6 +804,7 @@
 
 	@content;
 }
+
 @mixin outer-image-variant($url:false,$icon-align:left,$icon-size:false,$icon-offset:false,$icon-offset2:false){
 	@include inner-image-variant($url,$icon-align,$icon-offset,$icon-offset2);
 	@if $icon-align == left {
@@ -1038,6 +845,7 @@
 	}
 	@content;
 }
+
 @mixin icon-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){
     @include inline-block;
     background-image:$url;
@@ -1056,6 +864,7 @@
 	//with content
 	@content;
 }
+
 @mixin icon-right-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){
     @include inline-block;
     background:$url;
@@ -1074,6 +883,7 @@
 	//with content
 	@content;
 }
+
 @mixin icon-top-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-top:top){
     @include inline-block;
     background:$url;
@@ -1086,6 +896,7 @@
 	//with content
 	@content;
 }
+
 @mixin presudo-variant($width:false,$height:false,$content:"",$vertical-align:false){
 	content:$content;
 	@if type_of($content) == "string" {
@@ -1095,32 +906,12 @@
 	}
 	@content;
 }
-@mixin presudo-content-variant($content:"",$width:false,$height:false,$vertical-align:false){
+
+@mixin content-variant($content:"",$width:false,$height:false,$vertical-align:false){
 	@include presudo-variant($width,$height,$content,$vertical-align);
 	@content;
 }
-@mixin presudo-wrap-content($before,$after){
-	&:before {
-		@include presudo-content-variant($before);
-		vertical-align:baseline;
-		@content;
-	}
-	&:after {
-		@include presudo-content-variant($after);
-		vertical-align:baseline;
-		@content;
-	}
 
-}
-@mixin presudo-image-variant($content:"",$width:false,$height:false,$vertical-align:false){
-	@include presudo-variant($width,$height,"",$vertical-align);
-	@include background-image-variant($content,center,center);
-}
-@mixin presudo-imageset-variant($content:"",$width:false,$height:false,$vertical-align:false){
-	@include presudo-variant($width,$height,"",$vertical-align);
-	@include background-imageset-variant($content,$width $height);
-	@content;
-};
 @mixin list-variant($list-style:none,$list-style-position:inside){
     margin:0px;
     padding:0px;
@@ -1135,6 +926,7 @@
     }
 	@content;
 }
+
 //table cell에 의해 테이블 크기가 결정됩니다.
 @mixin cellbase-table-variant($spacing:0px,$table-width:false,$table-layout:auto) {
     display:table;
@@ -1152,6 +944,7 @@
 //table 크기안에서 셀크기가 결정됩니다.
 @mixin fixed-table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
 @mixin table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
+
 @mixin border-radius($dirction,$radius){
 	@if $dirction == "top" {
 	    border-top-right-radius: $radius;
@@ -1170,6 +963,7 @@
 	       border-top-left-radius: $radius;
 	}
 }
+
 @mixin block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@if $align-block {
 		@include block($width,$height,$align-block);
@@ -1189,6 +983,7 @@
 	}
 	@content;
 }
+
 @mixin circle-variant($diameter){
 	width:$diameter;
 	height:$diameter;
@@ -1196,6 +991,7 @@
 	border-radius:($diameter / 2);
 	@content;
 }
+
 @mixin badge-variant($width:false,$height:false,$radius:false,$wordwrap:false,$fix-width:false){
 	@if $fix-width == true {
 		@include inline-block($width,$height);
@@ -1222,7 +1018,8 @@
 	text-align:center;
 	@content;
 }
-@mixin anker-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+
+@mixin anchor-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include block-variant($width,$height,$vertical-align,$align-block);
 	@if $height {
 		line-height:$height;
@@ -1233,13 +1030,7 @@
 	@content;
 }
 
-@mixin image-block-variant($url:false,$width:false,$height:false,$vertical-align:middle,$align-block:false) {
-	background-image:$url;
-	background-repeat:no-repeat;
-	@include block-variant($width,$height,$vertical-align,$align-block);
-	@content;
-}
-@mixin clear-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+@mixin reset-block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include block-variant($width,$height,$vertical-align,$align-block);
 	margin:0;
 	padding:0;
@@ -1248,31 +1039,14 @@
 	}
 	@content;
 }
-@mixin background-block-variant($url,$width:false,$height:false,$bg-position:left center,$bg-size:false,$bg-repeat:false,$vertical-align:middle,$align-block:false){
-	@include block-variant($width,$height,$vertical-align,$align-block);
-    background-image:$url;
-	@if $bg-position {
-		background-position:$bg-position;
-	}
-	@if $bg-size {
-		//cover,contain
-		background-size:$bg-size;
-	} @else {
-		background-size:auto;
-	}
-	@if $bg-repeat {
-		background-repeat:$bg-repeat;
-	} @else {
-		background-repeat:no-repeat;
-	}
-	@content;
-}
+
 @mixin image-text-variant($url,$width:false,$height:false,$position-x:left,$position-y:center){
 	@include label-variant($width,$height);
 	@include background-image-variant($url,$position-x,$position-y);
     text-indent:-99999px;
 	@content;
 }
+
 @mixin nody-button-base($appearance-flag:false) {
 	@if $appearance-flag == false {
 		@include appearance-variant(false);
@@ -1289,6 +1063,7 @@
     &:hover{ text-decoration:none; };
     &:active{ text-decoration:none; };
 }
+
 @mixin link-variant(){
 	background-color:transparent;
 	border-color:transparent;
@@ -1299,9 +1074,10 @@
 	}
 	@content;
 }
+
 @mixin button-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
-	@include clear-block-variant($width,$height,$vertical-align,$align-block);
+	@include reset-block-variant($width,$height,$vertical-align,$align-block);
 	@if $height {
 		line-height:$height;
 	} @else {
@@ -1309,12 +1085,7 @@
 	}
 	@content;
 }
-@mixin padding-button-variant($padding:3px 3px 3px 3px,$vertical-align:middle,$align-block:false){
-	@include nody-button-base;
-	@include clear-block-variant(false,false,$vertical-align,$align-block);
-	padding:$padding;
-	@content;
-}
+
 //nok
 @mixin image-button-variant($url,$width:false,$height:false,$vertical-align:middle,$align-block:false){
 	@include nody-button-base;
@@ -1325,64 +1096,15 @@
     text-indent:-99999px;
 	@content;
 }
+
 @mixin input-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include clear-block-variant($width,$height,$vertical-align,$align-block);
+	@include reset-block-variant($width,$height,$vertical-align,$align-block);
 	padding:0 10px;
 	//webkit cursor fix
 	line-height:100%;
 	@content;
 }
-//nok
-@mixin image-input-variant($url:false,$width:false,$height:false,$vertical-align:middle,$align-block:false){
-	@include appearance-variant(false);
-	@include clear-block-variant($width,$height,$vertical-align,$align-block);
-	@content;
-}
-@mixin checkbox-variant($square-size:false,$vertical-align:middle,$align-block:false) {
-	@if $square-size != false {
-		@include appearance-variant(false);
-		@include block-variant($square-size,$square-size,$vertical-align,$align-block);
-		cursor:pointer;
-	}
-	@content;
-}
-@mixin image-checkbox-variant($url,$width,$height) {
-    @include no-appearance;
-    @include inline-block;
-    background-color:transparent;
-    background-image:url(#{$url});
-    width:$width;
-    height:$height;
-}
-@mixin label-checkbox-container-variant($url-default,$url-checked,$width,$height,$gap:5px,$imageTop:center,$line-height:false) {
-    @include inline-block;
-    vertical-align:middle;
-    margin:0;
-    input[type=checkbox], input[type=radio] {
-        @include no-appearance;
-        position: absolute;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        height:1px;
-        width:1px;
-        margin:-1px;
-        padding:0;
-        border:0;
-    }
-    input[type=checkbox], input[type=radio] {
-        + span {
-            @include icon-variant($url-default,$width + $gap,$height, left, $imageTop, $line-height);
-        }
-        &:checked + span {
-            @include icon-variant($url-checked,$width + $gap,$height, left, $imageTop, $line-height);
-        }
-    }
-    span {
-        @include user-select-variant(false);
-        @include inline-block;
-        cursor:pointer;
-    }
-}
+
 @mixin position-variant($axis:false,$width:auto,$height:auto,$offset-x:false,$offset-y:false){
     position: absolute;
     @if $offset-x == false { $offset-x : 0; }
@@ -1484,44 +1206,7 @@
 	height:$height;
 }
 
-@mixin presudo-position-variant($axis:false,$width:auto,$height:auto,$offset-x:false,$offset-y:false){
-    content:"";
-    @include position-variant($axis,$width,$height,$offset-x,$offset-y);
-	@content;
-}
-@mixin presudo-outside-position-variant($side,$start,$width,$height,$offset-x:false,$offset-y:false){
-    content:"";
-    @include outside-position-variant($side,$start,$width,$height,$offset-x,$offset-y);
-	@content;
-}
-@mixin presudo-outside-image-variant($url,$side,$start,$width,$height,$offset-x:false,$offset-y:false,$bg-position-left:false,$bg-position-right:false){
-    @include presudo-outside-position-variant($side,$start,$width,$height,$offset-x,$offset-y) {
-		@include background-image-variant($url,$bg-position-left,$bg-position-right);
-		@content;
-	}
-}
-
-@mixin centered-frame-variant($center-content,$width,$height,$overflow:visible){
-    position:relative;
-	@include inline-block;
-    width:$width;
-    height:$height;
-    overflow:$overflow;
-    #{$center-content} {
-        @include translate-center;
-        min-width: 100%;
-        min-height: 100%;
-        margin: auto;
-    }
-	@content;
-}
-@mixin image-frame-variant($width:auto,$height:auto) {
-	@include centered-frame-variant(img,$width,$height,hidden){
-		@content;
-	};
-}
-
-@mixin svg-frame-variant($width,$height:false) {
+@mixin svg-parent-variant($width,$height:false) {
 	@if $width == left or $width == false{
 		svg {
 			max-width:auto;
@@ -1542,6 +1227,7 @@
 		};
 	}
 }
+
 @mixin placeholder-variant {
 	&::-webkit-input-placeholder { /* WebKit browsers */
 		@content;
@@ -1561,6 +1247,7 @@
 		@content;
 	}
 }
+
 @mixin scrollbar-width-variant($width:17px) {
 	-webkit-overflow-scrolling:touch;
 	&::-webkit-scrollbar {
@@ -1571,6 +1258,7 @@
 		border-radius:$width;
 	}
 }
+
 @mixin scrollbar-variant($thumb:false,$track:white,$hover:#e6e6e6,$width:17px,$radius:2px) {
 	@if $thumb == false {
 		$thumb:#eee;
@@ -1660,6 +1348,7 @@
 		}
 	}
 }
+
 @mixin media-less-width($less:false, $addition-queries:false) {
 	@if $less {
 		$query:"(max-width: #{$less - 1})";
@@ -2429,3 +2118,80 @@
 		width:0px;
 	}
 }
+
+// this is beta
+
+@mixin flex($width:false, $height:false, $direction:row, $wrap:wrap){
+	display: -webkit-flex;
+	display: flex;
+	@include width-height($width,$height);
+	@include flex-flow-variant($direction,$wrap);
+	@content;
+}
+
+@mixin inline-flex($width:false, $height:false, $direction:row, $wrap:wrap){
+	display: -webkit-inline-flex;
+	display: inline-flex;
+	vertical-align:middle;
+
+	@include width-height($width,$height);
+	@include flex-flow-variant($direction,$wrap);
+	@content;
+}
+
+@mixin flex-align($horizontal-align:center,$vertical-align:center){
+	-webkit-align-items: $horizontal-align;
+	align-items: $horizontal-align;
+	-webkit-justify-content: $vertical-align;
+	justify-content: $vertical-align;
+}
+
+@mixin flex-item($width:false,$height:false) {
+	@if $width {
+		//flex-grow:2;
+		width:$width;
+	} @else {
+		//equal size in container
+		flex-grow:1;
+		flex-basis:0;
+	}
+	@if $height {
+		height:$height;
+	}
+	flex-shrink:1;
+	@content;
+}
+
+@mixin flex-item-count($count:1){
+	@include flex-item((100% / $count),false);
+	@content;
+}
+
+@mixin flex-response-section($margin:10px) {
+	@include flex(false,false,row);
+	$flex-response-margin:$margin !global;
+	margin-left:-($flex-response-margin / 2);
+	margin-right:-($flex-response-margin / 2);
+	@content;
+}
+@mixin inline-flex-response-section($margin:10px) {
+	@include inline-flex(false,false,row);
+	$flex-response-margin:$margin !global;
+	margin-left:-($flex-response-margin / 2);
+	margin-right:-($flex-response-margin / 2);
+	@content;
+}
+
+@mixin flex-response-item($width:false,$height:false){
+	@include flex-item($width,$height);
+	margin-left:($flex-response-margin / 2);
+	margin-right:($flex-response-margin / 2);
+}
+
+@mixin flex-response-item-count($count:1) {
+	@include flex-item-count($count);
+	margin-left:($flex-response-margin / 2);
+	margin-right:($flex-response-margin / 2);
+	@content;
+}
+
