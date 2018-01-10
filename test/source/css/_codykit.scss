@@ -1,5 +1,5 @@
 @charset "UTF-8";
-//CSS Toolkit :: Codykit version : 0.17 (1.0 alpha)
+//CSS Toolkit :: Codykit version : 0.17.1 (1.0 alpha)
 //auther : hojung ahn (https://github.com/labeldock/codykit)
 @if global-variable-exists(codykit-hack){ $codykit-hack:$codykit-hack !global; } @else {
 	$codykit-hack:false !global;
@@ -179,13 +179,13 @@
 }
 
 @mixin clearfix {
-    &:after {
-        content:"";
-        display:block;
-        height:0px;
+	&:after {
+		content:"";
+		display:block;
+		height:0px;
 		width:0px;
-        clear:both;
-    }
+		clear:both;
+	}
 }
 
 @mixin white-space-variant($flag:true,$scroll:false){
@@ -202,15 +202,15 @@
 }
 
 @mixin word-break-variant($flag:true,$text-overflow:clip) {
-    @if $flag == true{
-	    white-space: normal;
+	@if $flag == true{
+		white-space: normal;
 		word-break:break-all;
-        text-overflow: initial;
-        -o-text-overflow: initial;
-        -ms-text-overflow: initial;
-    }
-    @if $flag == false{
-    	white-space: nowrap;
+		text-overflow: initial;
+		-o-text-overflow: initial;
+		-ms-text-overflow: initial;
+	}
+	@if $flag == false{
+		white-space: nowrap;
 		word-break:keep-all;
 	    text-overflow: $text-overflow;
 	    -o-text-overflow: $text-overflow;
@@ -220,18 +220,16 @@
 
 @mixin word-wrap-variant($flag:true,$overflow:false,$text-overflow:clip) {
 	@if $flag == true{
-	    white-space: normal;
+		white-space: normal;
 		word-break:keep-all;
-		//word-break:normal;
-	    //word-wrap:normal;
 		@if $overflow == false {
 			overflow: visible;
 		} @else {
 			overflow: $overflow;
 		}
-        text-overflow: initial;
-        -o-text-overflow: initial;
-        -ms-text-overflow: initial;
+		text-overflow: initial;
+		-o-text-overflow: initial;
+		-ms-text-overflow: initial;
 	}
 	@if $flag == false{
 		white-space: nowrap;
@@ -705,10 +703,10 @@
     }
 }
 
-@mixin hr-variant($color:gray,$width:1px){
+@mixin hr-variant($color:gray,$width:1px,$margin:0px){
 	display:block;
 	height:$width;
-	margin:0;
+	margin:$margin 0px;
 	padding:0;
 	border-width:0;
 	background-color:$color;
@@ -913,17 +911,16 @@
 }
 
 @mixin list-variant($list-style:none,$list-style-position:inside){
-    margin:0px;
-    padding:0px;
+	padding:0px;
 	> li{
-        margin:0px;
-        @if $list-style {
-            list-style:$list-style;
-        }
+		margin:0px;
+		@if $list-style {
+			list-style:$list-style;
+		}
 		@if $list-style-position {
 			list-style-position:$list-style-position;
 		}
-    }
+	}
 	@content;
 }
 
@@ -942,8 +939,8 @@
 	@content;
 }
 //table 크기안에서 셀크기가 결정됩니다.
-@mixin fixed-table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
-@mixin table-variant($spacing:0px,$width:100%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
+@mixin fixed-table-variant($spacing:0px,$width:99.99%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
+@mixin table-variant($spacing:0px,$width:99.99%) { @include cellbase-table-variant($spacing,$width,fixed); @content; }
 
 @mixin border-radius($dirction,$radius){
 	@if $dirction == "top" {
@@ -1248,14 +1245,29 @@
 	}
 }
 
-@mixin scrollbar-width-variant($width:17px) {
+@mixin scrollbar-width-variant($width:false, $autoHiding:false) {
 	-webkit-overflow-scrolling:touch;
-	&::-webkit-scrollbar {
-	    width: $width;
-		height:$width;
+
+	@if $width == 0px or $width == none {
+		-ms-overflow-style: none;
+
+		&::-webkit-scrollbar { 
+			display: none; 
+		}
+	} @else {
+		@if $autoHiding == true {
+			-ms-overflow-style: -ms-autohiding-scrollbar;
+		} @else {
+			-ms-overflow-style: scrollbar;
+		}
+
+		&::-webkit-scrollbar {
+			width: $width or $codykit-scrollbar-width;
+			height:$width or $codykit-scrollbar-width;
+		}
 	}
 	&::-webkit-scrollbar-thumb {
-		border-radius:$width;
+		border-radius:$width or $codykit-scrollbar-width;
 	}
 }
 
