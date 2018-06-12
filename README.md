@@ -66,20 +66,20 @@ body > section {
 ### response column
 ```scss
 
-inventory.no-media {
+.like-bootstrap-row.no-media {
   // gap 10px;
   @include response-section(10px);
-  flow {
+  .like-bootstrap-col {
     //3column
     @include response-column(100%/3);
   }
 }
 
 
-inventory.with-media {
+.like-bootstrap-row.with-media {
   // gap 10px;
   @include response-section(10px);
-  flow {
+  .like-bootstrap-col {
     //1column
     @include media-mobile {
       @include response-column(100%);
