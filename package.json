@@ -1,0 +1,25 @@
+{
+  "name": "@sepalang/remark",
+  "version": "0.20.0",
+  "description": "function-oriented scss tool",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labeldock/codykit.git"
+  },
+  "keywords": [
+    "scss"
+  ],
+  "author": "AHN HO JUNG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labeldock/codykit/issues"
+  },
+  "homepage": "https://github.com/labeldock/codykit#readme"
+}

@@ -1,10 +1,10 @@
 @import 'codykit';
-@include codykit-standard-fontsize(16px);
+@include remark-standard-fontsize(16px);
 html {
 	@include root-fontsize-variant(16px);
 }
-@include codykit-document-basic-config(false,false,true);
-@include codykit-media-trace();
+@include remark-document-basic-config(false,false,true);
+@include remark-media-trace();
 .media-info {
 	@include media-mobile {
 		&:before {

@@ -51,7 +51,7 @@ end
 # end
 
 after_build do |builder|
-    codykit_source_path = File.expand_path('source/css/_codykit.scss',Dir.pwd)
-    FileUtils.cp codykit_source_path, File.expand_path('../dist/_codykit.scss',Dir.pwd)
+    codykit_source_path = File.expand_path('source/css/_remark.scss',Dir.pwd)
+    FileUtils.cp codykit_source_path, File.expand_path('../dist/_remark.scss',Dir.pwd)
     `rm -r build`
 end
