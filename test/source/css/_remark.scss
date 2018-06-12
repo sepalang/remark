@@ -1,5 +1,5 @@
 @charset "UTF-8";
-//remark version : 0.20.0 (1.1 alpha)
+//remark version : 0.20.1 (1.1 alpha)
 
 @if global-variable-exists(remark-hack){ $remark-hack:$remark-hack !global; } @else {
 	$remark-hack:false !global;
@@ -1744,137 +1744,143 @@
 }
 
 @mixin remark-document-basic($min-width:false) {
-	/* remark-document-basic -- start */
-    html,body {
-		position:relative;
-        margin:0px;
-        padding:0px;
-		@if $min-width == false {
-			min-width:320px;
-		} @else {
-			min-width:$min-width;
-		}
-		font-family: Sans-Serif;
+  /* remark-document-basic -- start */
+  html,body {
+    position:relative;
+    margin:0px;
+    padding:0px;
+    @if $min-width == false {
+      min-width:320px;
+    } @else {
+      min-width:$min-width;
     }
-    img {
-        border:none;
+    font-family: Sans-Serif;
+  }
+  img {
+    border:none;
+  }
+  section, article, header, footer, aside, details, summary, dialog, figcaption, figure, hgroup, main, nav, command, fieldset {
+    display:block;
+    margin:0;
+  }
+  section, article, header, footer, aside {
+    position:relative;
+  }
+  // chrome user agent styleseet fix
+  dialog {
+    position:static;
+    width:auto;
+    height:auto;
+    margin:initial;
+    padding:initial;
+    border:none;
+    background-color:white;
+  }
+  // media is inline-block
+  audio,canvas,progress,video {
+    @include inline-block;
+    margin:0;
+  }
+  script, style, template, [hidden] {
+    display:none !important;
+  }
+  [ghost] {
+    visibility:hidden;
+  }
+  [disabled] {
+    @include disabled-variant;
+  }
+  input,button,select,textarea {
+    font-family: inherit;  font-size: inherit;
+  }
+  input,button,select {
+    @include inline-block;
+  }
+  ul, menu, ol {
+    display:block;
+    padding:0;
+    margin:0;
+    > li {
+      list-style-position:inside;
     }
-    section, article, header, footer, aside, details, summary, dialog, figcaption, figure, hgroup, main, nav, command, fieldset {
-        display:block;
-		margin:0;
+  }
+  ol {
+    > li {
+      list-style-type:decimal;
     }
-	section, article, header, footer, aside {
-		position:relative;
-	}
-	//chrome user agent styleseet fix
-	dialog {
-		position:static;
-		width:auto;
-		height:auto;
-		margin:initial;
-		padding:initial;
-		border:none;
-		background-color:white;
-	}
+  }
+  menu {
+    > li {
+      list-style:none;
+      cursor:pointer;
+    }
+  }
+  dl,dd,dt {
+    margin:0;
+    text-indent:0;
+  }
+  label {
+    cursor:inherit;
+  }
+  .no-transition {
+    transition-duration:0.001s !important;
+    transition-delay:0.001s !important;
+    *, *:before, *:after {
+      transition-duration:0.001s !important;
+      transition-delay:0.001s !important;
+    }
+  }
+  .no-animation {
+    -webkit-animation-duration:0.001s !important;
+    animation-duration:0.001s !important;
+    *, *:before, *:after {
+      -webkit-animation-duration:0.001s !important;
+      animation-duration:0.001s !important;
+    }
+  }
+  table {
+    @include table-variant;
+    td,th{
+      font-weight:normal;
+      padding:0;
+      vertical-align:middle;
+      word-break:break-all;
+    }
+  }
+  [media-only~="mobile"]{
+    @include media-mobile-gt {
+      display:none !important;
+    }
 
-    audio,canvas,progress,video {
-        @include inline-block;
-		margin:0;
+  }
+  [media-only~="tablet"]{
+    @include media-outer-width($remark-tablet-width,$remark-desktop-width){
+      display:none !important;
     }
-	script, style, template, .hidden, [hidden] {
-		display:none !important;
-	}
-	[disabled] {
-		@include disabled-variant;
-	}
-    input,button,select,textarea {
-        font-family: inherit;  font-size: inherit;
+  }
+  [media-only~="desktop"]{
+    @include media-desktop-lt {
+      display:none !important;
     }
-	input,button,select {
-		@include inline-block;
-	}
-	ul, menu, ol {
-		display:block;
-		padding:0;
-		margin:0;
-		> li {
-			list-style-position:inside;
-		}
-	}
-	ol {
-		> li {
-			list-style-type:decimal;
-		}
-	}
-	menu > li {
-		list-style:none;
-		cursor:pointer;
-	}
-	dl,dd,dt {
-		margin:0;
-		text-indent:0;
-	}
-    label {
-        cursor:inherit;
+  }
+  [media-not~="mobile"]{
+    @include media-mobile {
+      display:none !important;
     }
-	.no-transition {
-		transition-duration:0.001s !important;
-		transition-delay:0.001s !important;
-		*, *:before, *:after {
-			transition-duration:0.001s !important;
-			transition-delay:0.001s !important;
-		}
-	}
-	.no-animation {
-		-webkit-animation-duration:0.001s !important;
-		animation-duration:0.001s !important;
-		*, *:before, *:after {
-			-webkit-animation-duration:0.001s !important;
-			animation-duration:0.001s !important;
-		}
-	}
-	table {
-		@include table-variant;
-		td,th{
-			font-weight:normal;
-			padding:0;
-			vertical-align:middle;
-			word-break:break-all;
-		}
-	}
-	[media-only~="mobile"]{
-		@include media-mobile-gt {
-			display:none !important;
-		}
-
-	}
-	[media-only~="tablet"]{
-		@include media-outer-width($remark-tablet-width,$remark-desktop-width){
-			display:none !important;
-		}
-	}
-	[media-only~="desktop"]{
-		@include media-desktop-lt {
-			display:none !important;
-		}
-	}
-	[media-not~="mobile"]{
-		@include media-mobile {
-			display:none !important;
-		}
-	}
-	[media-not~="tablet"]{
-		@include media-tablet {
-			display:none !important;
-		}
-	}
-	[media-not~="desktop"]{
-		@include media-desktop {
-			display:none !important;
-		}
-	}
-	/* remark-document-basic -- end */
+  }
+  [media-not~="tablet"]{
+    @include media-tablet {
+      display:none !important;
+    }
+  }
+  [media-not~="desktop"]{
+    @include media-desktop {
+      display:none !important;
+    }
+  }
+  /* remark-document-basic -- end */
 }
+
 @mixin modal-variant($background-color:rgba(0,0,0,0.65)) {
     -ms-overflow-style: none;
     position: fixed;
