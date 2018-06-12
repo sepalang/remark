@@ -1,37 +1,37 @@
-# Codykit
-scss style sets
+# Remark
+function-oriented scss tool
 
 ## function
 ### trace-media-query
 ```scss
-	@include remark-media-trace();
+@include remark-media-trace();
 ```
 
 ### parent select replace
 ```scss
 span.badge {
-	@include when("span.badge",".badge-red"){
-		color:red;
-	}
-	@include when("span.badge",".badge-blue"){
-		color:blue;
-	}
+  @include when("span.badge",".badge-red"){
+    color:red;
+  }
+  @include when("span.badge",".badge-blue"){
+    color:blue;
+  }
 }
 
 ### simple focus
 ```scss
 div {
-	@include focus(red);
+  @include focus(red);
 }
 ```
 
 ### simple absoulte
 ```scss
 cover {
-	position:relative;
-	section {
-		@include absolute(right,10px);
-	}
+  position:relative;
+  section {
+    @include absolute(right,10px);
+  }
 }
 
 ```
@@ -39,7 +39,7 @@ cover {
 ### scroll bar style (only webkit)
 ```scss
 screen {
-	@include scrollbar-variant
+  @include scrollbar-variant
 }
 ```
 
@@ -50,15 +50,15 @@ screen {
 @include remark-media-width(480px,768px,992px,1200px);
 
 body > section {
-	@include media-mobile {
-		width:400px;
-	}
-	@include media-tablet {
-		width:700px;
-	}
-	@include media-desktop {
-		width:1028px;
-	}
+  @include media-mobile {
+    width:400px;
+  }
+  @include media-tablet {
+    width:700px;
+  }
+  @include media-desktop {
+    width:1028px;
+  }
 }
 ```
 
@@ -67,46 +67,46 @@ body > section {
 ```scss
 
 inventory.no-media {
-	// gap 10px;
-	@include response-section(10px);
-	flow {
-		//3column
-		@include response-column(100%/3);
-	}
+  // gap 10px;
+  @include response-section(10px);
+  flow {
+    //3column
+    @include response-column(100%/3);
+  }
 }
 
 
 inventory.with-media {
-	// gap 10px;
-	@include response-section(10px);
-	flow {
-		//1column
-		@include media-mobile {
-			@include response-column(100%);
-		}
-		//2column
-		@include media-tablet {
-			@include response-column(50%);
-		}
-		//4column
-		@include media-desktop {
-			@include response-column(50%);
-		}
-	}
+  // gap 10px;
+  @include response-section(10px);
+  flow {
+    //1column
+    @include media-mobile {
+      @include response-column(100%);
+    }
+    //2column
+    @include media-tablet {
+      @include response-column(50%);
+    }
+    //4column
+    @include media-desktop {
+      @include response-column(50%);
+    }
+  }
 }
 ```
 
 ### icon (background base icon)
 ```scss
 span {
-	@include icon-variant(url(icon.png),10px,10px);
+  @include icon-variant(url(icon.png),10px,10px);
 }
 ```
 
 ### image text (inline)
 ```scss
 span {
-	@include image-text-variant(url(word.png),20px,10px);
+  @include image-text-variant(url(word.png),20px,10px);
 }
 ```
 
@@ -114,10 +114,10 @@ span {
 ### easy input style defaultlize
 ```scss
 input {
-	@mixin input-variant(20px,100px){
-		color:gray;
-		background-color:white;
-	}
+  @mixin input-variant(20px,100px){
+    color:gray;
+    background-color:white;
+  }
 }
 ```
 
