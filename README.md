@@ -1,4 +1,7 @@
 # Remark
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/sepalang/remark.svg)](https://greenkeeper.io/)
+
 function-oriented scss tool
 
 ## function
