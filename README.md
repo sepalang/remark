@@ -1,14 +1,29 @@
 # Remark
-function-oriented scss tool
 
-## function
-### trace-media-query
+Remark is a function-oriented tool utilizing SCSS. This library provides a set of useful SCSS mixins that assist in making web styling more efficient.
+
+## Usage
+
+### Initialization
+This initializes HTML and text styling.
 ```scss
-@include remark-media-trace();
+@import "./_remark_media.scss";
+@include remark-setup-html();
+@include remark-setup-text();
 ```
 
-### parent select replace
+### Media Queries
+This sets up and traces media queries.
 ```scss
+@import "./_remark_media.scss";
+@include remark-setup-media();
+@include remark-trace-media();
+```
+
+### Parent Selector Replacement
+Apply different styles according to specific selectors.
+```scss
+@import "./_remark_main.scss";
 span.badge {
   @include when("span.badge",".badge-red"){
     color:red;
@@ -17,101 +32,40 @@ span.badge {
     color:blue;
   }
 }
-
-### simple focus
-```scss
-div {
-  @include focus(red);
-}
 ```
 
-### simple absoulte
+### Simple Absolute Positioning
+Easily set an element's absolute position.
 ```scss
-cover {
+@import "./_remark_main.scss";
+.cover {
   position:relative;
   section {
     @include absolute(right,10px);
   }
 }
-
 ```
 
-### scroll bar style (only webkit)
+### Icon (Background-based Icon)
+Use a background image as an icon.
 ```scss
-screen {
-  @include scrollbar-variant
-}
-```
-
-
-### media setting
-```scss
-@import 'remark';
-@include remark-media-width(480px,768px,992px,1200px);
-
-body > section {
-  @include media-mobile {
-    width:400px;
-  }
-  @include media-tablet {
-    width:700px;
-  }
-  @include media-desktop {
-    width:1028px;
-  }
-}
-```
-
-
-### response column
-```scss
-
-.like-bootstrap-row.no-media {
-  // gap 10px;
-  @include response-section(10px);
-  .like-bootstrap-col {
-    //3column
-    @include response-column(100%/3);
-  }
-}
-
-
-.like-bootstrap-row.with-media {
-  // gap 10px;
-  @include response-section(10px);
-  .like-bootstrap-col {
-    //1column
-    @include media-mobile {
-      @include response-column(100%);
-    }
-    //2column
-    @include media-tablet {
-      @include response-column(50%);
-    }
-    //4column
-    @include media-desktop {
-      @include response-column(50%);
-    }
-  }
-}
-```
-
-### icon (background base icon)
-```scss
+@import "./_remark_main.scss";
 span {
   @include icon-variant(url(icon.png),10px,10px);
 }
 ```
 
-### image text (inline)
+### Image Text (Inline)
+Use an image as inline text.
 ```scss
+@import "./_remark_main.scss";
 span {
   @include image-text-variant(url(word.png),20px,10px);
 }
 ```
 
-
-### easy input style defaultlize
+### Easy Input Style Initialization
+Easily initialize the style of input fields.
 ```scss
 input {
   @mixin input-variant(20px,100px){
@@ -121,49 +75,4 @@ input {
 }
 ```
 
-## Basic custom tag
-- modal
-- stage
-- controls
-
-
-### modal
-```html
-<modal>
-  <dialog></dialog>
-</modal>
-
-```
-
-### stage
-```html
-<dialog>
-  <header></header>
-  <stage></stage>
-  <footer></footer>
-</dialog>
-```
-
-### controls
-```html
-<header>
-  <h3>Welcome</h3>
-  <controls>
-    <a href="">back</a>
-    <a href="">next</a>
-  </controls>
-</header>
-```
-
-```html
-<dialog>
-  <header></header>
-  <stage></stage>
-  <footer>
-    <controls>
-      <button>cancle</button>
-      <button>ok</button>
-    </controls>
-  </footer>
-</dialog>
-```
+Remark provides a multitude of features. Apologies, as we have not been able to document them all yet. Please refer to the source code for more information.

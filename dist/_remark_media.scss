@@ -1,0 +1,631 @@
+@import "./_remark_core.scss";
+
+// usage
+////// reset web
+// @include remark-setup-html();
+// @include remark-setup-text();
+////// responsive web
+// @include remark-setup-media();
+// @include remark-trace-media();
+
+$remark-media-version: "remark-media-1.0" !default;
+$remark-mobile-width: 360px !default;
+$remark-tablet-width: 768px !default;
+$remark-desktop-width: 1200px !default;
+$remark-mobile-landscape-width: 480px !default;
+$remark-tablet-landscape-width: 992px !default;
+$remark-desktop-landscape-width: 1920px !default;
+
+@mixin remark-setup-media () {
+  :root {
+    --remark-media-version: "#{$remark-media-version}";
+    --remark-mobile-width: #{$remark-mobile-width}; // actually unused
+    --remark-tablet-width: #{$remark-tablet-width};
+    --remark-desktop-width: #{$remark-desktop-width};
+    --remark-mobile-landscape-width: #{$remark-mobile-landscape-width};
+    --remark-tablet-landscape-width: #{$remark-tablet-landscape-width};
+    --remark-desktop-landscape-width: #{$remark-desktop-landscape-width};
+  }
+}
+
+@mixin remark-box-sizing($target: "*") {
+  #{$target} {
+
+    &,   &:before,   &:after {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+  }
+}
+
+@mixin remark-font-smooth($target: "html,body") {
+  #{$target} {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-smooth: always;
+  }
+}
+
+@mixin media-over-width($over: false, $addition-queries: false) {
+  @if $over {
+    $query: "(min-width: #{$over})";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-less-width($less: false, $addition-queries: false) {
+  @if $less {
+    $query: "(max-width: calc(#{$less} - 1px))";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-not-over-width($over: false, $addition-queries: false) {
+  @if $over {
+    $query: "(min-width: #{$over})";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media not all and #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-not-less-width($less: false, $addition-queries: false) {
+  @if $less {
+    $query: "(max-width: #{$less})";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media not all and #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-inner-width($less: false, $over: false, $addition-queries: false) {
+  @if $less and $over {
+    $query: "(min-width: #{$less}) and (max-width: calc(#{$over} - 1px))";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-outer-width($less: false, $over: false, $addition-queries: false) {
+  @if $less and $over {
+    $query: "(min-width: #{$less}) and (max-width: calc(#{$over} - 1px))";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media not all and #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-over-height($over: false, $addition-queries: false) {
+  @if $over {
+    $query: "(min-height: calc(#{$over} - 1px))";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-less-height($less: false, $addition-queries: false) {
+  @if $less {
+    $query: "(max-height: #{$less})";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+@mixin media-inner-height($less: false, $over: false, $addition-queries: false) {
+  @if $less and $over {
+    $query: "(min-height: #{$less}) and (max-height: calc(#{$over} - 1px))";
+
+    @if $addition-queries {
+      $query: ($addition-queries + " and " + $query);
+    }
+
+    @media #{$query} {
+      @content;
+    }
+  }
+}
+
+//coding style helper
+@mixin media-default($ratio: false) {
+  @if $ratio {
+
+    @media (-webkit-min-device-pixel-ratio:#{$ratio}),   (min-resolution: #{96 * $ratio}dpi) {
+      @content;
+    }
+  }
+
+  @else {
+    @content;
+  }
+}
+
+@mixin media-mobile-portrait($ratio: false) {
+  @if $ratio {
+    @include media-less-width($remark-mobile-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-less-width($remark-mobile-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-mobile-landscape($ratio: false) {
+  @if $ratio {
+    @include media-inner-width($remark-mobile-landscape-width, $remark-tablet-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-inner-width($remark-mobile-landscape-width, $remark-tablet-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-mobile($ratio: false) {
+  @if $ratio {
+    @include media-less-width($remark-tablet-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-less-width($remark-tablet-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-mobile-gt($ratio: false) {
+  @if $ratio {
+    @include media-over-width($remark-tablet-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-over-width($remark-tablet-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-tablet-portrait($ratio: false) {
+  @if $ratio {
+    @include media-inner-width($remark-tablet-width, $remark-tablet-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-inner-width($remark-tablet-width, $remark-tablet-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-tablet-landscape($ratio: false) {
+  @if $ratio {
+    @include media-inner-width($remark-tablet-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-inner-width($remark-tablet-landscape-width, $remark-desktop-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-tablet($ratio: false) {
+  @if $ratio {
+    @include media-inner-width($remark-tablet-width, $remark-desktop-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-inner-width($remark-tablet-width, $remark-desktop-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-tablet-portrait-gt($ratio: false) {
+  @if $ratio {
+    @include media-over-width($remark-tablet-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-over-width($remark-tablet-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-tablet-landscape-lt($ratio: false) {
+  @if $ratio {
+    @include media-less-width($remark-tablet-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-less-width($remark-tablet-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-desktop($ratio: false) {
+  @if $ratio {
+    @include media-over-width($remark-desktop-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-over-width($remark-desktop-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-desktop-lt($ratio: false) {
+  @if $ratio {
+    @include media-less-width($remark-desktop-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-less-width($remark-desktop-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-desktop-wide($ratio: false) {
+  @if $ratio {
+    @include media-over-width($remark-desktop-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-over-width($remark-desktop-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin media-desktop-wide-lt($ratio: false) {
+  @if $ratio {
+    @include media-less-width($remark-desktop-landscape-width, "(-webkit-min-device-pixel-ratio:#{$ratio}) and (min-resolution: #{96 * $ratio}dpi)") {
+      @content;
+    }
+  }
+
+  @else {
+    @include media-less-width($remark-desktop-landscape-width) {
+      @content;
+    }
+  }
+}
+
+@mixin remark-setup-text($vertical-align: middle) {
+  @if $vertical-align ==false {
+    $vertical-align: baseline;
+  }
+
+  //block text
+  h1, h2, h3, h4, h5, h6, p {
+    margin: 0px;
+    font-size: inherit;
+    vertical-align: $vertical-align;
+  }
+
+  //inline text
+  img {
+    vertical-align: $vertical-align;
+  }
+
+  span, tt, code, kbd, samp, var, em, s, q, b, strong, cite, dfn, i, time, mark, address {
+    display: inline;
+    font-family: inherit;
+    font-style: inherit;
+    color: inherit;
+    text-decoration: inherit;
+    font-weight: inherit;
+    padding: 0;
+    margin: 0;
+
+    &:after,   &:before {
+      content: none;
+    }
+  }
+
+  a {
+    display: inline;
+    font-family: inherit;
+    font-style: inherit;
+    color: inherit;
+    font-weight: inherit;
+    cursor: pointer;
+    vertical-align: $vertical-align;
+  }
+}
+
+@mixin remark-setup-html($min-width: false) {
+
+  /* remark-setup-html -- start */
+  html, body {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+
+    @if $min-width ==false {
+      min-width: 320px;
+    }
+
+    @else {
+      min-width: $min-width;
+    }
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+
+  img {
+    border: none;
+  }
+
+  section, article, header, footer, aside, details, summary, dialog, figcaption, figure, hgroup, main, nav, command, fieldset {
+    display: block;
+    margin: 0;
+  }
+
+  section, article, header, footer, aside {
+    position: relative;
+  }
+
+  // chrome user agent styleseet fix
+  dialog {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: initial;
+    padding: initial;
+    border: none;
+    background-color: white;
+  }
+
+  // media is inline-block
+  audio, canvas, progress, video {
+    @include inline-block;
+    margin: 0;
+  }
+
+  script, style, template, [hidden] {
+    display: none !important;
+  }
+
+  [ghost] {
+    visibility: hidden;
+  }
+
+  [disabled] {
+    @include disabled-variant;
+  }
+
+  input, button, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  input, button, select {
+    @include inline-block;
+  }
+
+  ul, menu, ol {
+    display: block;
+    padding: 0;
+    margin: 0;
+
+    >li {
+      list-style-position: inside;
+    }
+  }
+
+  ol {
+    >li {
+      list-style-type: decimal;
+    }
+  }
+
+  menu {
+    >li {
+      list-style: none;
+      cursor: pointer;
+    }
+  }
+
+  dl, dd, dt {
+    margin: 0;
+    text-indent: 0;
+  }
+
+  label {
+    cursor: inherit;
+  }
+
+  .no-transition {
+    transition-duration: 0.001s !important;
+    transition-delay: 0.001s !important;
+
+    *,   *:before,   *:after {
+      transition-duration: 0.001s !important;
+      transition-delay: 0.001s !important;
+    }
+  }
+
+  .no-animation {
+    -webkit-animation-duration: 0.001s !important;
+    animation-duration: 0.001s !important;
+
+    *,   *:before,   *:after {
+      -webkit-animation-duration: 0.001s !important;
+      animation-duration: 0.001s !important;
+    }
+  }
+
+  table {
+    @include table-variant;
+
+    td,   th {
+      font-weight: normal;
+      padding: 0;
+      vertical-align: middle;
+      word-break: break-all;
+    }
+  }
+
+  [media-only~="mobile"] {
+    @include media-mobile-gt {
+      display: none !important;
+    }
+  }
+
+  [media-only~="tablet"] {
+    @include media-outer-width(var(--remark-tablet-width), var(--remark-desktop-width)) {
+      display: none !important;
+    }
+  }
+
+  [media-only~="desktop"] {
+    @include media-desktop-lt {
+      display: none !important;
+    }
+  }
+
+  [media-not~="mobile"] {
+    @include media-mobile {
+      display: none !important;
+    }
+  }
+
+  [media-not~="tablet"] {
+    @include media-tablet {
+      display: none !important;
+    }
+  }
+
+  [media-not~="desktop"] {
+    @include media-desktop {
+      display: none !important;
+    }
+  }
+
+  /* remark-setup-html -- end */
+}
+
+@mixin remark-trace-media {
+  body {
+    &:after {
+      content: var(--remark-media-version);
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      background-color: black;
+      color: white;
+      padding: 3px 5px;
+      z-index: 10000;
+
+      @include media-mobile {
+        content: ("media-mobile (portrait) [ lt " + $remark-mobile-landscape-width + "]");
+        background-color: #ffeda0;
+      }
+
+      @include media-mobile-landscape {
+        content:("media-mobile (landscape) [" + $remark-mobile-landscape-width + " ~ " + #{$remark-tablet-width - 1} + "]");
+        background-color: #feb24c;
+      }
+
+      @include media-tablet {
+        content:("media-tablet (portrait) [" + $remark-tablet-width + " ~ " + #{$remark-tablet-landscape-width - 1} + "]");
+        background-color: #addd8e;
+      }
+
+      @include media-tablet-landscape {
+        content:("media-tablet (landscape) [" + $remark-tablet-landscape-width + "~" + #{$remark-desktop-width - 1} + "]");
+        background-color: #31a354;
+      }
+
+      @include media-desktop {
+        content: ("media-desktop (normal) [ gt " + $remark-desktop-width + "]");
+        background-color: #7fcdbb;
+      }
+
+      @include media-desktop-wide {
+        content: ("media-desktop (wide) [ gt " + $remark-desktop-landscape-width + "]");
+        background-color: #bcbddc;
+      }
+    }
+  }
+}

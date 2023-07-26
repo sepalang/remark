@@ -1,0 +1,108 @@
+@mixin width-height($width: false, $height: false) {
+  @if $width !=false {
+    width: $width;
+  }
+
+  @if $height !=false {
+    height: $height;
+  }
+}
+
+
+@mixin align-block($align: left, $width: false, $height: false) {
+  display: block;
+
+  @if $align ==left {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  @if $align ==right {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  @if $align ==center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @include width-height($width, $height);
+}
+
+
+@mixin block($width: false, $height: false, $align-block: false, $line-height: false) {
+  @include align-block($align-block, $width, $height);
+
+  @if $line-height {
+    line-height: $line-height;
+  }
+
+  @content;
+}
+
+@mixin inline-block($width: false, $height: false, $vertical-align: false, $line-height: false) {
+  display: inline-block;
+
+  @include width-height($width, $height);
+
+  @if $vertical-align ==false {
+    vertical-align: middle;
+  }
+
+  @else {
+    vertical-align: $vertical-align;
+  }
+
+  @if $line-height {
+    line-height: $line-height;
+  }
+
+  @content;
+}
+
+@mixin disabled-variant($switch: true, $with-shadow: true) {
+  @if $switch ==true {
+    cursor: not-allowed;
+    pointer-events: none;
+
+    @if $with-shadow ==true {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+}
+
+
+@mixin cellbase-table-variant($spacing: 0px, $table-width: false, $table-layout: auto) {
+  display: table;
+
+  @if $table-width {
+    width: $table-width;
+  }
+
+  table-layout:$table-layout;
+
+  @if $spacing >0px {
+    border-spacing: $spacing;
+    border-collapse: separate;
+  }
+
+  @else {
+    border-spacing: 0px;
+    border-collapse: collapse;
+  }
+
+  @content;
+}
+
+//table 크기안에서 셀크기가 결정됩니다.
+@mixin fixed-table-variant($spacing: 0px, $width: 99.99%) {
+  @include cellbase-table-variant($spacing, $width, fixed);
+  @content;
+}
+
+@mixin table-variant($spacing: 0px, $width: 99.99%) {
+  @include cellbase-table-variant($spacing, $width, fixed);
+  @content;
+}

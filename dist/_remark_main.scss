@@ -1,0 +1,763 @@
+@import "./_remark_core.scss";
+
+@mixin when($parent, $parent-state) {
+  @each $state in $parent-state {
+    $rep: selector-replace(&, $parent, #{$parent+$state});
+
+    @at-root #{$rep} {
+      @content;
+    }
+  }
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    height: 0px;
+    width: 0px;
+    clear: both;
+  }
+}
+
+
+@mixin white-space-variant($flag: true, $scroll: false) {
+  @if $flag ==true {
+    white-space: normal;
+  }
+
+  @else {
+    white-space: nowrap;
+  }
+
+  @if $scroll ==true {
+    max-width: 100%;
+  }
+
+  @else {
+    max-width: auto;
+  }
+}
+
+@mixin word-break-variant($flag: true, $text-overflow: clip) {
+  @if $flag ==true {
+    white-space: normal;
+    word-break: break-all;
+    text-overflow: initial;
+  }
+
+  @if $flag ==false {
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: $text-overflow;
+  }
+}
+
+@mixin word-wrap-variant($flag: true, $overflow: false, $text-overflow: clip) {
+  @if $flag ==true {
+    white-space: normal;
+    word-break: keep-all;
+
+    @if $overflow ==false {
+      overflow: visible;
+    }
+
+    @else {
+      overflow: $overflow;
+    }
+
+    text-overflow: initial;
+  }
+
+  @if $flag ==false {
+    white-space: nowrap;
+
+    //word-wrap:normal;
+    @if $overflow ==false {
+      overflow: hidden;
+    }
+
+    @else {
+      overflow: $overflow;
+    }
+
+    text-overflow: $text-overflow;
+  }
+}
+
+@mixin ellipsis-variant($flag: true, $overflow: false) {
+  @if $flag ==true {
+    @include word-wrap-variant(false, $overflow, ellipsis);
+  }
+
+  @if $flag ==false {
+    @include word-wrap-variant(true);
+  }
+}
+
+@mixin user-select-variant($flag: auto) {
+  @if $flag ==false or $flag ==none {
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  @else {
+    @if $flag ==true {
+      $flag: auto;
+    }
+
+    -webkit-touch-callout: auto;
+    user-select:auto;
+  }
+}
+
+@mixin appearance-variant($flag: true) {
+  @if $flag ==true {
+    appearance: normal;
+
+    &::-ms-expand {
+      display: normal;
+    }
+  }
+
+  @else if $flag ==false {
+    appearance: none;
+
+    &::-ms-expand {
+      display: none;
+    }
+  }
+
+  @else {
+    appearance: $flag;
+
+    &::-ms-expand {
+      display: $flag;
+    }
+  }
+
+  @content;
+}
+
+@mixin pointer-events-variant($flag: true, $cursor: false) {
+  @if $flag ==false or $flag ==none {
+    pointer-events: none;
+
+    @if $cursor ==true {
+      cursor: not-allowed;
+    }
+
+    @include user-select-variant(false);
+  }
+
+  @else {
+    @if $flag ==true {
+      $flag: auto;
+    }
+
+    pointer-events:$flag;
+
+    @if $cursor ==true {
+      cursor: auto;
+    }
+
+    @include user-select-variant(true);
+  }
+}
+
+
+@mixin image-text-variant($url, $width: false, $height: false, $position-x: left, $position-y: center) {
+  @include label-variant($width, $height);
+  @include background-image-variant($url, $position-x, $position-y);
+  text-indent: -99999px;
+  @content;
+}
+
+@mixin inner-image-variant($url: false, $icon-align: left, $icon-offset: false, $icon-offset2: false) {
+  background-image: $url;
+  background-repeat: no-repeat;
+
+  @if $icon-align ==left {
+    @if $icon-offset {
+      $apply-offset: left #{$icon-offset} !global;
+    }
+
+    @else {
+      $apply-offset: left !global;
+    }
+
+    @if $icon-offset2 {
+      $apply-offset2: center #{$icon-offset2};
+    }
+
+    @else {
+      $apply-offset2: center;
+    }
+
+    background-position:#{$apply-offset} #{$apply-offset2};
+  }
+
+  @if $icon-align ==right {
+    @if $icon-offset {
+      $apply-offset: right #{$icon-offset} !global;
+    }
+
+    @else {
+      $apply-offset: right !global;
+    }
+
+    @if $icon-offset2 {
+      $apply-offset2: center #{$icon-offset2} !global;
+    }
+
+    @else {
+      $apply-offset2: center !global;
+    }
+
+    background-position:#{$apply-offset} #{$apply-offset2};
+  }
+
+  @if $icon-align ==top {
+    @if $icon-offset2 {
+      $apply-offset: center #{$icon-offset} !global;
+    }
+
+    @else {
+      $apply-offset: center !global;
+    }
+
+    @if $icon-offset {
+      $apply-offset2: top #{$icon-offset2} !global;
+    }
+
+    @else {
+      $apply-offset2: top !global;
+    }
+
+    background-position:#{$apply-offset} #{$apply-offset2};
+  }
+
+  @if $icon-align ==bottom {
+    @if $icon-offset2 {
+      $apply-offset: center #{$icon-offset2} !global;
+    }
+
+    @else {
+      $apply-offset: center !global;
+    }
+
+    @if $icon-offset {
+      $apply-offset2: bottom #{$icon-offset} !global;
+    }
+
+    @else {
+      $apply-offset2: bottom !global;
+    }
+
+    background-position:#{$apply-offset} #{$apply-offset2};
+  }
+
+  @if $icon-align ==center {
+    @if $icon-offset {
+      $apply-offset: center #{$icon-offset} !global;
+    }
+
+    @else {
+      $apply-offset: center !global;
+    }
+
+    @if $icon-offset2 {
+      $apply-offset2: center #{$icon-offset2} !global;
+    }
+
+    @else {
+      $apply-offset2: center !global;
+    }
+
+    background-position:#{$apply-offset} #{$apply-offset2};
+  }
+
+  @content;
+}
+
+@mixin outer-image-variant($url: false, $icon-align: left, $icon-size: false, $icon-offset: false, $icon-offset2: false) {
+  @include inner-image-variant($url, $icon-align, $icon-offset, $icon-offset2);
+
+  @if $icon-align ==left {
+    @if $icon-size {
+      @if $icon-offset {
+        padding-left: $icon-size + $icon-offset;
+      }
+
+      @else {
+        padding-left: $icon-size;
+      }
+    }
+  }
+
+  @if $icon-align ==right {
+    @if $icon-size {
+      @if $icon-offset {
+        padding-right: $icon-size + $icon-offset;
+      }
+
+      @else {
+        padding-right: $icon-size;
+      }
+    }
+  }
+
+  @if $icon-align ==top {
+    @if $icon-size {
+      @if $icon-offset {
+        padding-top: $icon-size + $icon-offset;
+      }
+
+      @else {
+        padding-top: $icon-size;
+      }
+    }
+  }
+
+  @if $icon-align ==bottom {
+    @if $icon-size {
+      @if $icon-offset {
+        padding-bottom: $icon-size + $icon-offset;
+      }
+
+      @else {
+        padding-bottom: $icon-size;
+      }
+    }
+  }
+
+  @content;
+}
+
+@mixin icon-variant($url: false, $icon-width: auto, $icon-height: auto, $icon-position: false, $icon-size: false) {
+  @include inline-block;
+  background-image: $url;
+  background-repeat: no-repeat;
+
+  @if $icon-position {
+    background-position: $icon-position;
+  }
+
+  @else {
+    background-position: left center;
+  }
+
+  padding-left:$icon-width;
+  min-width:$icon-width;
+  min-height:$icon-height;
+
+  @if $icon-size !=false {
+    background-size: $icon-size;
+  }
+
+  //with content
+  @content;
+}
+
+@mixin icon-right-variant($url: false, $icon-width: auto, $icon-height: auto, $icon-position: false, $icon-size: false) {
+  @include inline-block;
+  background: $url;
+  background-repeat: no-repeat;
+
+  @if $icon-position {
+    background-position: $icon-position;
+  }
+
+  @else {
+    background-position: right center;
+  }
+
+  padding-right:$icon-width;
+  min-width:$icon-width;
+  min-height:$icon-height;
+
+  @if $icon-size !=false {
+    background-size: $icon-size;
+  }
+
+  //with content
+  @content;
+}
+
+@mixin icon-top-variant($url: false, $icon-width: auto, $icon-height: auto, $icon-top: top) {
+  @include inline-block;
+  background: $url;
+  background-repeat: no-repeat;
+  background-position: center $icon-top;
+  padding-top: $icon-height;
+  width: $icon-width;
+  min-height: $icon-height;
+  text-align: center;
+  //with content
+  @content;
+}
+
+@mixin list-variant($list-style: none, $list-style-position: inside) {
+  padding: 0px;
+
+  >li {
+    margin: 0px;
+
+    @if $list-style {
+      list-style: $list-style;
+    }
+
+    @if $list-style-position {
+      list-style-position: $list-style-position;
+    }
+  }
+
+  @content;
+}
+
+@mixin anchor-variant($width: false, $height: false, $vertical-align: middle, $align-block: false) {
+  @include block-variant($width, $height, $vertical-align, $align-block);
+
+  @if $height {
+    line-height: $height;
+  }
+
+  cursor:pointer;
+  text-decoration:inherit;
+
+  &:hover {
+    text-decoration: inherit;
+    color: inherit;
+  }
+
+  @content;
+}
+
+@mixin reset-block-variant($width: false, $height: false, $vertical-align: middle, $align-block: false) {
+  @include block-variant($width, $height, $vertical-align, $align-block);
+  margin: 0;
+  padding: 0;
+
+  >* {
+    vertical-align: middle;
+  }
+
+  @content;
+}
+
+@mixin nody-button-base($appearance-flag: false) {
+  @if $appearance-flag ==false {
+    @include appearance-variant(false);
+    border: none;
+  }
+
+  @if $appearance-flag ==true {
+    @include appearance-variant(button);
+  }
+  cursor:pointer;
+  text-align:center;
+  @include user-select-variant(false);
+  @include ellipsis-variant(true, visible);
+  &:hover {
+    text-decoration: none;
+  }
+  &:active {
+    text-decoration: none;
+  }
+}
+
+@mixin link-variant() {
+  background-color: transparent;
+  border-color: transparent;
+  text-decoration: none;
+  @include ellipsis-variant(true, visible);
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @content;
+}
+
+@mixin button-variant($width: false, $height: false, $vertical-align: middle, $align-block: false) {
+  @include nody-button-base;
+  @include reset-block-variant($width, $height, $vertical-align, $align-block);
+
+  @if $height {
+    line-height: $height;
+  }
+
+  @else {
+    line-height: 100%;
+  }
+
+  @content;
+}
+
+@mixin input-variant($width: false, $height: false, $vertical-align: middle, $align-block: false) {
+  @include reset-block-variant($width, $height, $vertical-align, $align-block);
+  padding: 0 10px;
+  //webkit cursor fix
+  line-height: 100%;
+  @content;
+}
+
+@mixin scrollbar-width-variant($width: false, $autoHiding: false) {
+  -webkit-overflow-scrolling: touch;
+
+  @if $width ==0px or $width ==none {
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @else {
+    @if $autoHiding ==true {
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    @else {
+      -ms-overflow-style: scrollbar;
+    }
+
+    &::-webkit-scrollbar {
+      width: $width or $remark-scrollbar-width;
+      height: $width or $remark-scrollbar-width;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $width or $remark-scrollbar-width;
+  }
+}
+
+@mixin scrollbar-variant($thumb: false, $track: white, $hover: #e6e6e6, $width: 17px, $radius: 2px) {
+  @if $thumb ==false {
+    $thumb: #eee;
+  }
+
+  // ms scroll bar
+  -ms-overflow-style: scrollbar;
+  scrollbar-base-color: $track;
+  scrollbar-arrow-color: $thumb;
+
+  // webkit scroll bar
+  @include scrollbar-width-variant($width);
+
+  &::-webkit-scrollbar-track {
+    background-color: $track;
+  }
+
+  @if $thumb ==auto {
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      margin: 2px;
+      border: 2px solid $track;
+      border-radius: $radius;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background-color: $hover;
+      }
+    }
+  }
+
+  @else {
+    &::-webkit-scrollbar-thumb {
+      background-color: $thumb;
+      border: 2px solid $track;
+      border-radius: $radius;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: $hover;
+  }
+}
+
+@mixin modal-variant($background-color: rgba(0, 0, 0, 0.65)) {
+  -ms-overflow-style: none;
+  position: fixed;
+  top: 0;
+  right: -18px;
+  bottom: 0;
+  left: -18px;
+  z-index: 10000;
+  display: none;
+  overflow: hidden;
+  outline: 0;
+  background-color: $background-color;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+
+  &.open-modal,
+  &[open] {
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+  }
+}
+
+@mixin dialog-variant($width: 50%, $height: auto, $top: 50px) {
+  position: relative;
+  margin: $top auto;
+  width: $width;
+  height: $height;
+  background-color: white;
+}
+
+@mixin absolute($x: false, $y: false, $r: false, $b: false) {
+  position: absolute;
+  @if $x ==right {
+    $right: $y;
+    $top: $r;
+    @if $right ==false {
+      $right: 0px;
+    }
+    @if $top ==false {
+      $top: 0px;
+    }
+    $x: false;
+    $r: $right;
+    $y: $top;
+  }
+
+  @else if $x ==left {
+    $left: $y;
+    $top: $r;
+
+    @if $left ==false {
+      $left: 0px;
+    }
+
+    @if $top ==false {
+      $top: 0px;
+    }
+
+    $x: $left;
+    $y: $top;
+    $r: false;
+  }
+
+  @else if $x ==top {
+    $top: false;
+    $left: false;
+    $right: false;
+
+    @if $y ==full {
+      $top: $r or 0px;
+      $left: $b or 0px;
+      $right: $b or 0px;
+    }
+
+    @else if $y ==center {
+      $top: $r or 0px;
+      $left: auto;
+      $right: auto;
+    }
+
+    @else if $y ==right {
+      $top: $r or 0px;
+      $left: auto;
+      $right: $b or 0px;
+    }
+
+    @else if $y ==left {
+      $top: $r or 0px;
+      $left: $b or 0px;
+      $right: auto;
+    }
+
+    @else {
+      $top: $y or 0px;
+      $left: $r or 0px;
+      $right: auto;
+    }
+
+    $x: $left;
+    $y: $top;
+    $r: $right;
+    $b: auto;
+  }
+
+  @else if $x ==bottom {
+
+    $bottom: false;
+    $left: false;
+    $right: false;
+
+    @if $y ==full {
+      $bottom: $r or 0px;
+      $left: $b or 0px;
+      $right: $b or 0px;
+    }
+
+    @else if $y ==center {
+      $bottom: $r or 0px;
+      $left: auto;
+      $right: auto;
+    }
+
+    @else if $y ==right {
+      $bottom: $r or 0px;
+      $left: auto;
+      $right: $b or 0px;
+    }
+
+    @else if $y ==left {
+      $bottom: $r or 0px;
+      $left: $b or 0px;
+      $right: auto;
+    }
+
+    @else {
+      $bottom: $y or 0px;
+      $left: $r or 0px;
+      $right: auto;
+    }
+
+    $x: $left;
+    $y: auto;
+    $r: $right;
+    $b: $bottom;
+  }
+
+  @else if $x ==all or $x ==full {
+    $x: 0px;
+    $y: 0px;
+    $r: 0px;
+    $b: 0px;
+  }
+
+  @if $x {
+    left: $x;
+  }
+
+  @if $y {
+    top: $y;
+  }
+
+  @if $r {
+    right: $r;
+  }
+
+  @if $b {
+    bottom: $b;
+  }
+
+  @if $x !=false and $r !=false {
+    width: auto;
+  }
+
+  @if $y !=false and $b !=false {
+    height: auto;
+  }
+
+  @content;
+}
