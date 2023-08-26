@@ -17,7 +17,7 @@ This sets up and traces media queries.
 ```scss
 @import "./_remark_media.scss";
 @include remark-setup-media();
-@include remark-trace-media();
+@include remark-trace-media(); // At the end of body you will see what the current media is
 ```
 
 ### Parent Selector Replacement
@@ -50,7 +50,8 @@ Easily set an element's absolute position.
 Use a background image as an icon.
 ```scss
 @import "./_remark_main.scss";
-span {
+.someIcon {
+  // iconImage, iconWidth, iconHeight
   @include icon-variant(url(icon.png),10px,10px);
 }
 ```
@@ -60,6 +61,7 @@ Use an image as inline text.
 ```scss
 @import "./_remark_main.scss";
 span {
+  // textImage, width, height
   @include image-text-variant(url(word.png),20px,10px);
 }
 ```
@@ -68,7 +70,8 @@ span {
 Easily initialize the style of input fields.
 ```scss
 input {
-  @mixin input-variant(20px,100px){
+  // width, height
+  @include input-variant(20px,100px){
     color:gray;
     background-color:white;
   }
