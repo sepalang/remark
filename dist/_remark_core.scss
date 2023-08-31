@@ -61,6 +61,15 @@
   @content;
 }
 
+@mixin block-variant($width:false,$height:false,$vertical-align:middle,$align-block:false){
+	@if $align-block {
+		@include block($width,$height,$align-block);
+	} @else {
+		@include inline-block($width,$height,$vertical-align);
+	}
+	@content;
+}
+
 @mixin disabled-variant($switch: true, $with-shadow: true) {
   @if $switch ==true {
     cursor: not-allowed;
